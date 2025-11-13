@@ -1,0 +1,82 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    background-color: #f5f5f5;
+}
+nav{
+    background-color: #232f3e;
+    color: #fff;
+}
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.search-container input{
+    font-size: 15px;
+    padding: 10px;
+    border-radius: 10px;
+    outline: none;
+    border: none;
+}
+.search-container button{
+    font-size: 15px;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    transition: all 0.5s ease-in;
+}
+.search-container button:hover{
+    transform: scale(1.05);
+}
+main{
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-block: 38px;
+}
+main section{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+
+}
+.movie-container{
+    display: flex;
+    background-color: #fff;
+    box-shadow: 0 0 10px #ccc;
+    width: 80%;
+    border-radius: 10px;
+    padding: 2rem;
+    gap: 4rem;
+}
+.movie-poster img{
+    height: 450px;
+    margin-right: 30px;
+    border-radius: 10px;
+}
+.movie-details {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    font-size: 20px;
+}
+footer{
+    text-align: center;
+    background-color: #232f3e;
+    color: white;
+    padding-block: 20px;
+    margin-top: 40px;
+    font-size: 20px;
+}

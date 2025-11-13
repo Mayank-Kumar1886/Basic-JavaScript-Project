@@ -1,0 +1,28 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    background-color: lightblue;
+    display: flex;
+    justify-content: center;
+
+}
+.cards{
+    width: 200px;
+    height: 200px;
+    background-color: white;
+    font-size: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    margin: 10px;
+}
+.scrollBar {
+    background-color: green;
+    width: 100%;
+    position: fixed;
+    height: 50px;
+}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Budget App</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Budget App</h1>
+      <div class="error_message1">
+        <p>Please Enter Budget Amount | More than 0</p>
+      </div>
+      <div class="error_message2">
+        <p>Please Enter Expenses Description or Expense amount</p>
+      </div>
+      <div class="budget_content">
+        <div class="budget">
+            <form>
+                <label for="budget">Your Budget :</label>
+                <input type="number" placeholder="Enter Your Budget" class="budget_input">
+                <button class="btn" id="btn_budget">Calculate</button>
+            </form>
+        </div>
+        <div class="expenses">
+            <form>
+                <label for="expenses">Your Expenses :</label>
+                <input type="text" placeholder="Enter your Expenses Desc" class="expense_input">
+                <input type="number" placeholder="Enter your Expenses Amount" class="expense_amount">
+                <button class="btn" id="btn_expenses">Calculate</button>
+            </form>
+        </div>
+      </div>
+
+      <ul class="cards">
+        <li>
+            <i class="fa-solid fa-money-bill"></i>
+            <span class="info">
+                <h3><span>$</span><span class="budget_card"></span></h3>
+                <p>Budget</p>
+            </span>
+        </li>
+        <li>
+            <i class="fa-solid fa-credit-card"></i>
+            <span class="info">
+                <h3><span>$</span><span class="expenses_card"></span></h3>
+                <p>Expenses</p>
+            </span>
+        </li>
+        <li>
+            <i class="fa-solid fa-dollar-sign"></i>
+            <span class="info">
+                <h3><span>$</span><span class="balance_card"></span></h3>
+                <p>Balance</p>
+            </span>
+        </li>
+      </ul>
+
+      <div class="tbl_content">
+        <h3>Budget Details</h3>
+        <div class="tbl_data">
+            <!-- <ul class="tbl_tr_content">
+                <li>1</li>
+                <li>Gaming Mouse</li>
+                <li><span>$</span>600</li>
+                <li>
+                    <button type="button" class="btn_edit">Edit</button>
+                    <button type="button" class="btn_delete">Delete</button>
+                </li>
+            </ul> -->
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

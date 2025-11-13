@@ -1,0 +1,37 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    background-color: lightblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.container{
+    text-align: center;
+    box-shadow: 0 0 10px black;
+    border-radius: 10px;
+    width: 20rem;
+}
+.container .month{
+    
+    background-color: red;
+    border-radius: 10px;
+    font-size: 3.5rem;
+    padding: 20px;
+}
+.container .day{
+    padding: 20px;
+    font-size: 20px;
+}
+.container .date{
+    font-size: 3rem;
+    padding: 10px;
+}
+.container .year{
+    font-size: 20px;
+    
+}

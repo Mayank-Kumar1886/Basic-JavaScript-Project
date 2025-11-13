@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Form Validation</title>
+  </head>
+  <body>
+    <main class="container">
+      <form id="registrationForm" novalidate>
+        <fieldset>
+          <legend><h1>Register With Us</h1></legend>
+          <div class="form-group">
+            <label for="userName">Username</label>
+            <input
+              type="text"
+              id="userName"
+              name="userName"
+              required
+              placeholder="Enter username"
+            />
+            <span class="error-message" id="error-name" aria-live="polite"
+              ></span
+            >
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              placeholder="Enter email"
+            />
+            <span class="error-message" id="error-email" aria-live="polite"
+              ></span
+            >
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required
+              placeholder="Enter password"
+            />
+            <span class="error-message" id="error-password" aria-live="polite"
+              ></span
+            >
+          </div>
+          <div class="form-group">
+            <label for="confirm-password">Confirm Password</label>
+            <input
+              type="password"
+              id="confirm-password"
+              name="confirm-password"
+              required
+              placeholder="Enter confirm-password"
+            />
+            <span class="error-message" id="error-password-confirm" aria-live="polite"
+              ></span
+            >
+          </div>
+          <button type="submit" id="button">Register</button>
+        </fieldset>
+      </form>
+    </main>
+
+    <script defer src="script.js"></script>
+  </body>
+</html>
