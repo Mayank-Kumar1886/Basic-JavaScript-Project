@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background: #1e1e1e;
+        color: #171717;
+      }
+
+      .container {
+        background-color: #fff;
+        color: #171717;
+        padding: 2rem;
+        width: 40%;
+        margin: 4rem auto;
+        border-radius: 10px;
+      }
+
+      .weather_header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      input {
+        border: none;
+        background: #1e1e1e;
+        color: #fff;
+        outline: none;
+        padding: 0.5rem 2.5rem;
+        border-radius: 5px;
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+      }
+
+      input::placeholder {
+        color: #f7f7f7;
+      }
+
+      .weather_search {
+        position: relative;
+      }
+
+      .weather_search i {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        font-size: 15px;
+        color: #fff;
+      }
+
+      .weather_units {
+        font-size: 1.5rem;
+      }
+
+      .weather_units span {
+        cursor: pointer;
+      }
+
+      .weather_units span:first-child {
+        margin-right: 0.5rem;
+      }
+
+      .weather_body {
+        text-align: center;
+        margin-top: 3rem;
+      }
+
+      .weather_datetime {
+        margin-bottom: 2rem;
+        font-size: 14px;
+      }
+
+      .weather_forecast {
+        background: #1e1e1e;
+        /* background-color: #f7f7f7; */
+        color: #fff;
+        /* color: #171717; */
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 30px;
+      }
+
+      .weather_icon img {
+        width: 100px;
+        filter: drop-shadow(2px 4px 6px black);
+        -webkit-filter: drop-shadow(2px 4px 6px black);
+      }
+
+      .weather_temperature {
+        font-size: 1.75rem;
+      }
+
+      .weather_minmax {
+        display: flex;
+        justify-content: center;
+      }
+
+      .weather_minmax p {
+        font-size: 14px;
+        margin: 0.5rem;
+      }
+
+      .weather_info {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 1rem;
+        margin-top: 3rem;
+      }
+
+      .weather_card {
+        display: flex;
+        align-items: center;
+        background: #1e1e1e;
+        background-color: #f7f7f7;
+        color: #000;
+        padding: 1rem;
+        border-radius: 10px;
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+      }
+
+      .weather_card i {
+        font-size: 1.5rem;
+        margin-right: 1rem;
+      }
+
+      .weather_card p {
+        font-size: 14px;
+      }
+
+      @media (max-width: 936px) {
+        .container {
+          width: 90%;
+        }
+
+        .weather_header {
+          flex-direction: column;
+        }
+
+        .weather_units {
+          margin-top: 1rem;
+        }
+      }
+
+      @media (max-width: 400px) {
+        .weather_info {
+          grid-template-columns: none;
+        }
+      }
+    </style>
+    <title>Weather</title>
+  </head>
+  <body>
+    <div class="container">
+        <!-- Input field Search -->
+      <div class="weather_header">
+        <form class="weather_search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input
+            type="text"
+            class="city_name"
+            placeholder="Search Your City..."
+          />
+        </form>
+      </div>
+      <!-- weather main data -->
+      <div class="weather_body">
+        <h1 class="weather_city"></h1>
+        <p class="weather_date_time"></p>
+        <div class="weather_data">
+          <p class="weather_forcast"></p>
+          <div class="weather_icon"></div>
+        </div>
+        <p class="weather_temperture"></p>
+        <div class="weather_minmax">
+          <div class="weather_min"></div>
+          <div class="weather_max"></div>
+        </div>
+      </div>
+      <!-- weather extra data at bottom -->
+       <div class="weather_info">
+        <div class="weather_card">
+            <i class="fa-solid fa-temperature-three-quarters"></i>
+            <div >
+                <p>Feels Like</p>
+                <p class="weather_feelsLike"></p>
+            </div>
+        </div>
+        <div class="weather_card">
+            <i class="fa-solid fa-droplet"></i>
+            <div >
+                <p>Humidity</p>
+                <p class="weather_humidity"></p>
+            </div>
+        </div>
+        <div class="weather_card">
+            <i class="fa-solid fa-wind"></i>
+            <div >
+                <p>Wind</p>
+                <p class="weather_wind"></p>
+            </div>
+        </div>
+        <div class="weather_card">
+            <i class="fa-solid fa-temperature-three-quarters"></i>
+            <div >
+                <p>Pressure</p>
+                <p class="weather_pressure"></p>
+            </div>
+        </div>
+       </div>
+    </div>
+    
+    <script>
+        const cityName = document.querySelector(".weather_city");
+        const dateTime = document.querySelector(".weather_date_time");
+        const weatherForcast = document.querySelector(".weather_forcast")
+        const weatherTemperature = document.querySelector(".weather_temperture");
+        const weatherIcon = document.querySelector(".weather_icon");
+        const weatherMinTemp = document.querySelector(".weather_min")
+        const weatherMaxTemp = document.querySelector(".weather_max")
+        const weatherFeelsLike = document.querySelector(".weather_feelsLike")
+        const weatherHumidity = document.querySelector(".weather_humidity")
+        const weatherWind = document.querySelector(".weather_wind")
+        const weatherPressure = document.querySelector(".weather_pressure")
+        const citySearch = document.querySelector('.weather_search')
+
+
+        const getCountryName = (code)=>{
+         return new Intl.DisplayNames([code], {type:"region"}).of(code)
+        }
+        const getDateTime = (dt)=>{
+            const currentDate = new Date (dt *1000);
+            const options = {
+                weekday : "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "numeric",
+                minutes: "numeric"
+            }
+            return new Intl.DateTimeFormat("en-US",options).format(currentDate)
+        }
+        let city = "pune"
+        
+        citySearch.addEventListener('submit',(event)=>{
+            event.preventDefault();
+            const cityName = document.querySelector(".city_name");
+            console.log(cityName.value);
+
+            city = cityName.value;
+            getWeatherData();
+            cityName.value = "";
+        })
+        const getWeatherData = async()=>{
+            const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=4496e9a7b741c1a22642f16929f78ce0`;
+            try{
+               const response = await fetch(weatherUrl);
+               const data = await response.json();
+               console.log(data);
+
+               const {main , name , weather, sys, dt, wind} = data;
+
+               cityName.innerHTML = `${name} , ${getCountryName(sys.country)}`;
+               dateTime.innerHTML = getDateTime(dt);
+
+               weatherForcast.innerHTML = weather[0].main;
+               weatherIcon.innerHTML = `<img src="http://openweathermap.org/img/wn/${weather[0].icon}@4x.png" />`;
+
+               weatherTemperature.innerHTML = `${main.temp}&#176`;
+               weatherMinTemp.innerHTML = `Min: ${main.temp_min.toFixed()}&#176`
+               weatherMaxTemp.innerHTML = `Max: ${main.temp_max.toFixed()}&#176`
+
+               weatherFeelsLike.innerHTML = `${main.feels_like.toFixed()}&#176`
+               weatherHumidity.innerHTML = `${main.humidity}%`
+               weatherWind.innerHTML = `${wind.speed}m/s`
+               weatherPressure.innerHTML = `${main.pressure}hPa`
+            }
+            catch(error){
+                console.log(error);
+            }
+        }
+
+
+        document.body.addEventListener('load', getWeatherData())
+    </script>
+  </body>
+</html>

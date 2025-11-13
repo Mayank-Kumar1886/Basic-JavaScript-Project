@@ -1,0 +1,52 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    background-color: antiquewhite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;    
+}
+.container{
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 10px black;
+    padding: 10px;
+    border-radius: 10px;
+    width: 30rem;
+    gap: 20px;
+    background-color: white;
+}
+.container h1{
+    display: block;
+    margin: 0 auto;
+}
+.container textarea{
+    width: 90%;
+    margin: 0 auto;
+    height: 15rem;
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 10px;
+}
+.container button{
+    width: 50%;
+    margin: 0 auto;
+    font-size: 20px;
+    padding: 10px;
+    background-color: blue;
+    color: white;
+    cursor: pointer;
+    transition: all 0.5s ease-in;
+    border-radius: 10px;
+}
+.container button:hover{
+     transform: scale(1.05);
+}
+.container p{
+    text-align: center;
+    font-size: 25px;
+}
