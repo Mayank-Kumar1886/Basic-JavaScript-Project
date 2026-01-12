@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 * {
     margin: 0;
     padding: 0;
@@ -35,4 +36,43 @@ span.active {
     100% {
         transform: scale(2.5) translate(0,-150px);
     }
+=======
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: lightblue;
+    height: 100vh;
+}
+
+.container {
+    cursor: pointer;
+}
+
+span {
+    font-size: 11rem;
+    color: blue;
+    font-weight: bolder;
+    line-height: 1;
+    display: inline-block;
+}
+
+span.active {
+    animation: jump 2s ease-in-out;
+}
+
+@keyframes jump {
+    0% {
+        transform: translate(0,0) rotate(180deg);
+    }
+    100% {
+        transform: scale(2.5) translate(0,-150px);
+    }
+>>>>>>> 88423350aac196a0369d0a1597bda7b79843098a
 }

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 *{
     margin: 0;
     padding: 0;
@@ -28,4 +29,36 @@ body{
     font-size: 4rem;
     text-align: center;
     padding: 20px;
+=======
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    background-color: antiquewhite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.container{
+    box-shadow: 0 0 10px black;
+    border-radius: 10px;
+    width: 30rem;
+    
+}
+.container h1{
+    padding: 20px;
+    text-align: center;
+    font-size: 3rem;
+    background-color: blue;
+    border-radius: 10px 10px 0 0;
+    color: white;
+}
+.time{
+    font-size: 4rem;
+    text-align: center;
+    padding: 20px;
+>>>>>>> 88423350aac196a0369d0a1597bda7b79843098a
 }
