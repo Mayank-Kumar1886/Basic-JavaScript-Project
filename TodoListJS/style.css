@@ -1,0 +1,77 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    list-style: none;
+}
+body{
+    background-color: #c5acac;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.container{
+    display: flex;
+    flex-direction: column;
+    margin-top: 100px;
+    align-items: center;
+    background: #f8f8f8;
+    width: 50rem;
+    border-radius: 20px;
+    padding: 30px;
+    gap: 10px;
+    
+}
+.container h1{
+   font-size: 4.5rem;
+    padding: 35px;
+}
+.inputAdd{
+    display: flex;
+    gap: 30px;
+    margin: 20px;
+}
+.inputAdd input{
+   padding: 14px;
+    width: 25rem;
+    border-radius: 5px;
+    font-size: 20px;
+    border: none;
+    outline: none;
+}
+.inputAdd button{
+    padding: 14px;
+    border-radius: 5px;
+    width: 5rem;
+    font-size: 15px;
+    border: none;
+    background-color: rgb(37, 141, 37);
+    color: white;
+    cursor: pointer;
+}
+.errorMsg{
+    padding: 20px;
+    font-size: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: red;
+}
+ul{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+ul li{
+      width: 35rem;
+    padding: 15px 30px;
+    border: 1px solid black;
+    font-size: 20px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+}
+i{
+  cursor: pointer;
+}

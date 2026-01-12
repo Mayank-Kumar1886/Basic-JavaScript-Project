@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In</title>
+    <link rel="stylesheet" href="SignIn.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>LOGIN</h1>
+      <form
+        action="/login"
+        method="POST"
+        #loginForm="ngForm"
+        (ngSubmit)="loginUser(loginForm.value)"
+      >
+        <label for="username">Username:</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          required
+          placeholder="User Name"
+        />
+
+        <label for="passwordInput">Password</label>
+        <input
+          type="password"
+          placeholder="Password"
+          class="password"
+          id="passwordInput"
+        />
+      </form>
+      <button class="button" role="button"  id="submitButton">
+        <span class="text">Submit</span>
+      </button>
+      <div class="extraFeature">
+        <a href="../Blog/SignUp.html">Do not have any account?</a>
+        <a href="../Blog/ForgetPassword.html">Forgot password?</a>
+      </div>
+    </div>
+
+    <script>
+      // function isValidPassword(password) {
+      //     // Regular expression for password validation
+      //     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+      //     return passwordRegex.test(password);
+      // }
+      //
+      // function validatePasswordInput() {
+      //     const passwordInput = document.getElementById("passwordInput").value;
+      //     const validationMessage = document.createElement("p");
+      //
+      //     if (isValidPassword(passwordInput)) {
+      //       window.location.href = "../Blog/BlogPage.html"
+      //     } else {
+      //       alert("Wrong password")
+      //
+      //     }
+      //
+      //     const container = document.querySelector(".container");
+      //     container.appendChild(validationMessage);
+      // }
+      function handleSignIn() {
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("passwordInput").value;
+        const storedDataString = localStorage.getItem("userData");
+        if (storedDataString) {
+          const storedData = JSON.parse(storedDataString);
+          if (
+            username === storedData.userName &&
+            password === storedData.password
+          ) {
+            window.location.href = "../Blog/BlogPage.html";
+            return true;
+          } else {
+            alert("Invalid username or password. Please try again.");
+            return false;
+          }
+        } else {
+          alert("No user data found. Please sign up first.");
+          return false;
+        }
+      } 
+      
+      document.getElementById("submitButton").addEventListener("click", function(event) {
+        event.preventDefault(); // Prevent form submission
+        handleSignIn();
+      });
+    </script>
+  </body>
+</html>

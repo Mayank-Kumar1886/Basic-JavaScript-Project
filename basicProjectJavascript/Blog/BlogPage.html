@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="BlogPage.css">
+  <script src="BlogPage.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <header class="header ">
+    <div class="HeaderContainer">
+      <h1>MG Company</h1>
+      <nav class="navbar">
+        <ul class="navbar-nav">
+          <li class="nav-item" ><a href="#">Home</a></li>
+          <li class="nav-item" onclick="redirectToAbout()"><a href="#">About</a></li>
+          <li class="nav-item" onclick="redirectToServices()"><a href="#" >Services</a></li>
+          <li class="nav-item" onclick="redirectToContactUs()"><a href="#">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="buttons">
+        <button class="btn btn1" onclick="redirectToChoiceBlog()"><span></span> Choose our services </button>
+        <button class="btn btn2" onclick="redirectToSignin()"> 
+          <span></span> Sign In  <i class="fa-solid fa-right-to-bracket"></i>
+        </button>
+        <button class="btn btn3" onclick="redirectToSignin()">
+          <span></span> Sign out <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
+    </div>
+    </header>
+  
+  <div class="FeatureContainer">
+    <ul>
+      <li><a href="../Features/PostUpload.html">Upload your post</a></li>
+      <li><a href="">DashBoard</a></li>
+      <li><a href="">Wallet</a></li>
+      <li><a href="">Buy Subscription</a></li>
+      <li><a href="">Our Branches</a></li>
+      <li><a href="">Portfolio</a></li>
+      <li class="account"><a href="" >Account</a> <i class="fa fa-user" aria-hidden="true"></i></li>
+    </ul>
+</div>
+<div class="FeaturePostContainer">
+  <header>
+  <h1>Featured Posts </h1>
+<button>Show all <i class="fa-solid fa-right-to-bracket"></i></button>
+</header>
+<div class="cards">
+  <div class="Cardcontainer">
+    <div class="card">
+      <img class="Image"
+        src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"
+        alt=""
+      />
+      <h2>Control your mouse</h2>
+      <p>
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem obcaecati
+        eveniet aperiam quod sapiente ipsa quia quis, nemo nostrum. Neque fugiat
+        hic tempora a distinctio inventore, minima qui recusandae magni vel omnis
+        quisquam aut? Minima, tempora, in earum culpa dolor numquam esse delectus
+        rerum odit perspiciatis tempore aliquid unde commodi. ........
+        
+      </p>
+      <h4>Uploaded 4 years ago</h4>
+      <div class="icons">
+        <i class="fa fa-heart" aria-hidden="true"></i>
+        <i class="fa fa-comment" aria-hidden="true"></i>
+        <i class="fa fa-share" aria-hidden="true"></i>
+        <i class="fa fa-save" aria-hidden="true"></i>
+        <i class="fa fa-download" aria-hidden="true"></i>
+      </div>
+      <div class="creator">
+        <img src="https://images.unsplash.com/photo-1687360440886-f220f137a16c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="">
+        <p>Mayank Kumar , Software Developer</p>
+      </div>
+    </div>
+  </div>  
+  <div class="Cardcontainer">
+    <div class="card">
+      <img class="Image"
+        src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"
+        alt=""
+      />
+      <h2>Control your mouse</h2>
+      <p>
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem obcaecati
+        eveniet aperiam quod sapiente ipsa quia quis, nemo nostrum. Neque fugiat
+        hic tempora a distinctio inventore, minima qui recusandae magni vel omnis
+        quisquam aut? Minima, tempora, in earum culpa dolor numquam esse delectus
+        rerum odit perspiciatis tempore aliquid unde commodi. ........
+        
+      </p>
+      <h4>Uploaded 4 years ago</h4>
+      <div class="icons">
+        <i class="fa fa-heart" aria-hidden="true"></i>
+        <i class="fa fa-comment" aria-hidden="true"></i>
+        <i class="fa fa-share" aria-hidden="true"></i>
+        <i class="fa fa-save" aria-hidden="true"></i>
+        <i class="fa fa-download" aria-hidden="true"></i>
+      </div>
+      <div class="creator">
+        <img src="https://images.unsplash.com/photo-1687360440886-f220f137a16c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="">
+        <p>Mayank Kumar , Software Developer</p>
+      </div>
+    </div>
+  </div>  
+  <div class="Cardcontainer">
+    <div class="card">
+      <img class="Image"
+        src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"
+        alt=""
+      />
+      <h2>Control your mouse</h2>
+      <p>
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem obcaecati
+        eveniet aperiam quod sapiente ipsa quia quis, nemo nostrum. Neque fugiat
+        hic tempora a distinctio inventore, minima qui recusandae magni vel omnis
+        quisquam aut? Minima, tempora, in earum culpa dolor numquam esse delectus
+        rerum odit perspiciatis tempore aliquid unde commodi. ........
+        
+      </p>
+      <h4>Uploaded 4 years ago</h4>
+      <div class="icons">
+        <i class="fa fa-heart" aria-hidden="true"></i>
+        <i class="fa fa-comment" aria-hidden="true"></i>
+        <i class="fa fa-share" aria-hidden="true"></i>
+        <i class="fa fa-save" aria-hidden="true"></i>
+        <i class="fa fa-download" aria-hidden="true"></i>
+      </div>
+      <div class="creator">
+        <img src="https://images.unsplash.com/photo-1687360440886-f220f137a16c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="">
+        <p>Mayank Kumar , Software Developer</p>
+      </div>
+    </div>
+  </div>  
+</div>
+  </div>
+</div>
+<div class="otherCard">
+<div class="Cardcontainer">
+  <div class="card">
+    <img class="Image"
+      src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"
+      alt=""
+    />
+    <h2>Control your mouse</h2>
+    <p>
+      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem obcaecati
+      eveniet aperiam quod sapiente ipsa quia quis, nemo nostrum. Neque fugiat
+      hic tempora a distinctio inventore, minima qui recusandae magni vel omnis
+      quisquam aut? Minima, tempora, in earum culpa dolor numquam esse delectus
+      rerum odit perspiciatis tempore aliquid unde commodi. ........
+      
+    </p>
+    <h4>Uploaded 4 years ago</h4>
+    <div class="icons">
+      <i class="fa fa-heart" aria-hidden="true"></i>
+      <i class="fa fa-comment" aria-hidden="true"></i>
+      <i class="fa fa-share" aria-hidden="true"></i>
+      <i class="fa fa-save" aria-hidden="true"></i>
+      <i class="fa fa-download" aria-hidden="true"></i>
+    </div>
+    <div class="creator">
+      <img src="https://images.unsplash.com/photo-1687360440886-f220f137a16c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="">
+      <p>Mayank Kumar , Software Developer</p>
+    </div>
+  </div>
+</div>
+<div class="Cardcontainer">
+  <div class="card">
+    <img class="Image"
+      src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"
+      alt=""
+    />
+    <h2>Control your mouse</h2>
+    <p>
+      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem obcaecati
+      eveniet aperiam quod sapiente ipsa quia quis, nemo nostrum. Neque fugiat
+      hic tempora a distinctio inventore, minima qui recusandae magni vel omnis
+      quisquam aut? Minima, tempora, in earum culpa dolor numquam esse delectus
+      rerum odit perspiciatis tempore aliquid unde commodi. ........
+      
+    </p>
+    <h4>Uploaded 4 years ago</h4>
+    <div class="icons">
+      <i class="fa fa-heart" aria-hidden="true"></i>
+      <i class="fa fa-comment" aria-hidden="true"></i>
+      <i class="fa fa-share" aria-hidden="true"></i>
+      <i class="fa fa-save" aria-hidden="true"></i>
+      <i class="fa fa-download" aria-hidden="true"></i>
+    </div>
+    <div class="creator">
+      <img src="https://images.unsplash.com/photo-1687360440886-f220f137a16c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="">
+      <p>Mayank Kumar , Software Developer</p>
+    </div>
+  </div>
+</div>
+<div class="Cardcontainer">
+  <div class="card">
+    <img class="Image"
+      src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"
+      alt=""
+    />
+    <h2>Control your mouse</h2>
+    <p>
+      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem obcaecati
+      eveniet aperiam quod sapiente ipsa quia quis, nemo nostrum. Neque fugiat
+      hic tempora a distinctio inventore, minima qui recusandae magni vel omnis
+      quisquam aut? Minima, tempora, in earum culpa dolor numquam esse delectus
+      rerum odit perspiciatis tempore aliquid unde commodi. ........
+      
+    </p>
+    <h4>Uploaded 4 years ago</h4>
+    <div class="icons">
+      <i class="fa fa-heart" aria-hidden="true"></i>
+      <i class="fa fa-comment" aria-hidden="true"></i>
+      <i class="fa fa-share" aria-hidden="true"></i>
+      <i class="fa fa-save" aria-hidden="true"></i>
+      <i class="fa fa-download" aria-hidden="true"></i>
+    </div>
+    <div class="creator">
+      <img src="https://images.unsplash.com/photo-1687360440886-f220f137a16c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="">
+      <p>Mayank Kumar , Software Developer</p>
+    </div>
+  </div>
+</div>
+<div class="Cardcontainer">
+  <div class="card">
+    <img class="Image"
+      src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"
+      alt=""
+    />
+    <h2>Control your mouse</h2>
+    <p>
+      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem obcaecati
+      eveniet aperiam quod sapiente ipsa quia quis, nemo nostrum. Neque fugiat
+      hic tempora a distinctio inventore, minima qui recusandae magni vel omnis
+      quisquam aut? Minima, tempora, in earum culpa dolor numquam esse delectus
+      rerum odit perspiciatis tempore aliquid unde commodi. ........
+      
+    </p>
+    <h4>Uploaded 4 years ago</h4>
+    <div class="icons">
+      <i class="fa fa-heart" aria-hidden="true"></i>
+      <i class="fa fa-comment" aria-hidden="true"></i>
+      <i class="fa fa-share" aria-hidden="true"></i>
+      <i class="fa fa-save" aria-hidden="true"></i>
+      <i class="fa fa-download" aria-hidden="true"></i>
+    </div>
+    <div class="creator">
+      <img src="https://images.unsplash.com/photo-1687360440886-f220f137a16c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="">
+      <p>Mayank Kumar , Software Developer</p>
+    </div>
+  </div>
+</div>
+<div class="Cardcontainer">
+  <div class="card">
+    <img class="Image"
+      src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"
+      alt=""
+    />
+    <h2>Control your mouse</h2>
+    <p>
+      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem obcaecati
+      eveniet aperiam quod sapiente ipsa quia quis, nemo nostrum. Neque fugiat
+      hic tempora a distinctio inventore, minima qui recusandae magni vel omnis
+      quisquam aut? Minima, tempora, in earum culpa dolor numquam esse delectus
+      rerum odit perspiciatis tempore aliquid unde commodi. ........
+      
+    </p>
+    <h4>Uploaded 4 years ago</h4>
+    <div class="icons">
+      <i class="fa fa-heart" aria-hidden="true"></i>
+      <i class="fa fa-comment" aria-hidden="true"></i>
+      <i class="fa fa-share" aria-hidden="true"></i>
+      <i class="fa fa-save" aria-hidden="true"></i>
+      <i class="fa fa-download" aria-hidden="true"></i>
+    </div>
+    <div class="creator">
+      <img src="https://images.unsplash.com/photo-1687360440886-f220f137a16c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="">
+      <p>Mayank Kumar , Software Developer</p>
+    </div>
+  </div>
+</div>
+<div class="Cardcontainer">
+  <div class="card">
+    <img class="Image"
+      src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"
+      alt=""
+    />
+    <h2>Control your mouse</h2>
+    <p>
+      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem obcaecati
+      eveniet aperiam quod sapiente ipsa quia quis, nemo nostrum. Neque fugiat
+      hic tempora a distinctio inventore, minima qui recusandae magni vel omnis
+      quisquam aut? Minima, tempora, in earum culpa dolor numquam esse delectus
+      rerum odit perspiciatis tempore aliquid unde commodi. ........
+      
+    </p>
+    <h4>Uploaded 4 years ago</h4>
+    <div class="icons">
+      <i class="fa fa-heart" aria-hidden="true"></i>
+      <i class="fa fa-comment" aria-hidden="true"></i>
+      <i class="fa fa-share" aria-hidden="true"></i>
+      <i class="fa fa-save" aria-hidden="true"></i>
+      <i class="fa fa-download" aria-hidden="true"></i>
+    </div>
+    <div class="creator">
+      <img src="https://images.unsplash.com/photo-1687360440886-f220f137a16c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="">
+      <p>Mayank Kumar , Software Developer</p>
+    </div>
+  </div>
+</div>
+<div class="Cardcontainer">
+  <div class="card">
+    <img class="Image"
+      src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"
+      alt=""
+    />
+    <h2>Control your mouse</h2>
+    <p>
+      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem obcaecati
+      eveniet aperiam quod sapiente ipsa quia quis, nemo nostrum. Neque fugiat
+      hic tempora a distinctio inventore, minima qui recusandae magni vel omnis
+      quisquam aut? Minima, tempora, in earum culpa dolor numquam esse delectus
+      rerum odit perspiciatis tempore aliquid unde commodi. ........
+      
+    </p>
+    <h4>Uploaded 4 years ago</h4>
+    <div class="icons">
+      <i class="fa fa-heart" aria-hidden="true"></i>
+      <i class="fa fa-comment" aria-hidden="true"></i>
+      <i class="fa fa-share" aria-hidden="true"></i>
+      <i class="fa fa-save" aria-hidden="true"></i>
+      <i class="fa fa-download" aria-hidden="true"></i>
+    </div>
+    <div class="creator">
+      <img src="https://images.unsplash.com/photo-1687360440886-f220f137a16c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="">
+      <p>Mayank Kumar , Software Developer</p>
+    </div>
+  </div>
+</div>
+<div class="Cardcontainer">
+  <div class="card">
+    <img class="Image"
+      src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"
+      alt=""
+    />
+    <h2>Control your mouse</h2>
+    <p>
+      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem obcaecati
+      eveniet aperiam quod sapiente ipsa quia quis, nemo nostrum. Neque fugiat
+      hic tempora a distinctio inventore, minima qui recusandae magni vel omnis
+      quisquam aut? Minima, tempora, in earum culpa dolor numquam esse delectus
+      rerum odit perspiciatis tempore aliquid unde commodi. ........
+      
+    </p>
+    <h4>Uploaded 4 years ago</h4>
+    <div class="icons">
+      <i class="fa fa-heart" aria-hidden="true"></i>
+      <i class="fa fa-comment" aria-hidden="true"></i>
+      <i class="fa fa-share" aria-hidden="true"></i>
+      <i class="fa fa-save" aria-hidden="true"></i>
+      <i class="fa fa-download" aria-hidden="true"></i>
+    </div>
+    <div class="creator">
+      <img src="https://images.unsplash.com/photo-1687360440886-f220f137a16c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="">
+      <p>Mayank Kumar , Software Developer</p>
+    </div>
+  </div>
+</div>
+<div class="Cardcontainer">
+  <div class="card">
+    <img class="Image"
+      src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"
+      alt=""
+    />
+    <h2>Control your mouse</h2>
+    <p>
+      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem obcaecati
+      eveniet aperiam quod sapiente ipsa quia quis, nemo nostrum. Neque fugiat
+      hic tempora a distinctio inventore, minima qui recusandae magni vel omnis
+      quisquam aut? Minima, tempora, in earum culpa dolor numquam esse delectus
+      rerum odit perspiciatis tempore aliquid unde commodi. ........
+      
+    </p>
+    <h4>Uploaded 4 years ago</h4>
+    <div class="icons">
+      <i class="fa fa-heart" aria-hidden="true"></i>
+      <i class="fa fa-comment" aria-hidden="true"></i>
+      <i class="fa fa-share" aria-hidden="true"></i>
+      <i class="fa fa-save" aria-hidden="true"></i>
+      <i class="fa fa-download" aria-hidden="true"></i>
+    </div>
+    <div class="creator">
+      <img src="https://images.unsplash.com/photo-1687360440886-f220f137a16c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="">
+      <p>Mayank Kumar , Software Developer</p>
+    </div>
+  </div>
+</div>
+<div class="Cardcontainer">
+  <div class="card">
+    <img class="Image"
+      src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"
+      alt=""
+    />
+    <h2>Control your mouse</h2>
+    <p>
+      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem obcaecati
+      eveniet aperiam quod sapiente ipsa quia quis, nemo nostrum. Neque fugiat
+      hic tempora a distinctio inventore, minima qui recusandae magni vel omnis
+      quisquam aut? Minima, tempora, in earum culpa dolor numquam esse delectus
+      rerum odit perspiciatis tempore aliquid unde commodi. ........
+      
+    </p>
+    <h4>Uploaded 4 years ago</h4>
+    <div class="icons">
+      <i class="fa fa-heart" aria-hidden="true"></i>
+      <i class="fa fa-comment" aria-hidden="true"></i>
+      <i class="fa fa-share" aria-hidden="true"></i>
+      <i class="fa fa-save" aria-hidden="true"></i>
+      <i class="fa fa-download" aria-hidden="true"></i>
+    </div>
+    <div class="creator">
+      <img src="https://images.unsplash.com/photo-1687360440886-f220f137a16c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="">
+      <p>Mayank Kumar , Software Developer</p>
+    </div>
+  </div>
+</div>
+<div class="Cardcontainer">
+  <div class="card">
+    <img class="Image"
+      src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"
+      alt=""
+    />
+    <h2>Control your mouse</h2>
+    <p>
+      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem obcaecati
+      eveniet aperiam quod sapiente ipsa quia quis, nemo nostrum. Neque fugiat
+      hic tempora a distinctio inventore, minima qui recusandae magni vel omnis
+      quisquam aut? Minima, tempora, in earum culpa dolor numquam esse delectus
+      rerum odit perspiciatis tempore aliquid unde commodi. ........
+      
+    </p>
+    <h4>Uploaded 4 years ago</h4>
+    <div class="icons">
+      <i class="fa fa-heart" aria-hidden="true"></i>
+      <i class="fa fa-comment" aria-hidden="true"></i>
+      <i class="fa fa-share" aria-hidden="true"></i>
+      <i class="fa fa-save" aria-hidden="true"></i>
+      <i class="fa fa-download" aria-hidden="true"></i>
+    </div>
+    <div class="creator">
+      <img src="https://images.unsplash.com/photo-1687360440886-f220f137a16c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="">
+      <p>Mayank Kumar , Software Developer</p>
+    </div>
+  </div>
+</div>
+<div class="Cardcontainer">
+  <div class="card">
+    <img class="Image"
+      src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"
+      alt=""
+    />
+    <h2>Control your mouse</h2>
+    <p>
+      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem obcaecati
+      eveniet aperiam quod sapiente ipsa quia quis, nemo nostrum. Neque fugiat
+      hic tempora a distinctio inventore, minima qui recusandae magni vel omnis
+      quisquam aut? Minima, tempora, in earum culpa dolor numquam esse delectus
+      rerum odit perspiciatis tempore aliquid unde commodi. ........
+      
+    </p>
+    <h4>Uploaded 4 years ago</h4>
+    <div class="icons">
+      <i class="fa fa-heart" aria-hidden="true"></i>
+      <i class="fa fa-comment" aria-hidden="true"></i>
+      <i class="fa fa-share" aria-hidden="true"></i>
+      <i class="fa fa-save" aria-hidden="true"></i>
+      <i class="fa fa-download" aria-hidden="true"></i>
+    </div>
+    <div class="creator">
+      <img src="https://images.unsplash.com/photo-1687360440886-f220f137a16c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="">
+      <p>Mayank Kumar , Software Developer</p>
+    </div>
+  </div>
+</div>
+<div class="Cardcontainer">
+  <div class="card">
+    <img class="Image"
+      src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"
+      alt=""
+    />
+    <h2>Control your mouse</h2>
+    <p>
+      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem obcaecati
+      eveniet aperiam quod sapiente ipsa quia quis, nemo nostrum. Neque fugiat
+      hic tempora a distinctio inventore, minima qui recusandae magni vel omnis
+      quisquam aut? Minima, tempora, in earum culpa dolor numquam esse delectus
+      rerum odit perspiciatis tempore aliquid unde commodi. ........
+      
+    </p>
+    <h4>Uploaded 4 years ago</h4>
+    <div class="icons">
+      <i class="fa fa-heart" aria-hidden="true"></i>
+      <i class="fa fa-comment" aria-hidden="true"></i>
+      <i class="fa fa-share" aria-hidden="true"></i>
+      <i class="fa fa-save" aria-hidden="true"></i>
+      <i class="fa fa-download" aria-hidden="true"></i>
+    </div>
+    <div class="creator">
+      <img src="https://images.unsplash.com/photo-1687360440886-f220f137a16c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="">
+      <p>Mayank Kumar , Software Developer</p>
+    </div>
+  </div>
+</div>
+<div class="Cardcontainer">
+  <div class="card">
+    <img class="Image"
+      src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"
+      alt=""
+    />
+    <h2>Control your mouse</h2>
+    <p>
+      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem obcaecati
+      eveniet aperiam quod sapiente ipsa quia quis, nemo nostrum. Neque fugiat
+      hic tempora a distinctio inventore, minima qui recusandae magni vel omnis
+      quisquam aut? Minima, tempora, in earum culpa dolor numquam esse delectus
+      rerum odit perspiciatis tempore aliquid unde commodi. ........
+      
+    </p>
+    <h4>Uploaded 4 years ago</h4>
+    <div class="icons">
+      <i class="fa fa-heart" aria-hidden="true"></i>
+      <i class="fa fa-comment" aria-hidden="true"></i>
+      <i class="fa fa-share" aria-hidden="true"></i>
+      <i class="fa fa-save" aria-hidden="true"></i>
+      <i class="fa fa-download" aria-hidden="true"></i>
+    </div>
+    <div class="creator">
+      <img src="https://images.unsplash.com/photo-1687360440886-f220f137a16c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="">
+      <p>Mayank Kumar , Software Developer</p>
+    </div>
+  </div>
+</div>
+</div> 
+   </body>

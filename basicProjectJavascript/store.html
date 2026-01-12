@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>filterable Gallery in HTML CSS Javascript</title>
+  </head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #e7f2fd;
+      min-width: 100vh;
+    }
+    .container {
+      width: 100%;
+      position: relative;
+      max-width: 1350px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 20px;
+      background-color: #fff;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+      border-radius: 10px;
+    }
+    .filter-button {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    button:active,
+    button:hover {
+      padding: 12px 22px;
+      font-size: 22px;
+
+      transition: 0.6s;
+    }
+    button.active {
+      background-color: #4070f4;
+      color: #fff;
+    }
+    .filterable-cards {
+      display: flex;
+      margin-top: 25px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      flex-grow: 1;
+      flex-basis: 300px;
+      background-color: #fff;
+      padding: 3px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+    .card.hide {
+      display: none;
+    }
+    .card img {
+      width: 100%;
+      height: 250px;
+      border-radius: 8px 8px 0 0;
+    }
+    .card-body {
+      padding: 15px 20px 20px 15px;
+    }
+    .card-title {
+      font-size: 20px;
+      font-weight: 500;
+      color: #333;
+    }
+    .card-text {
+      font-size: 18px;
+      color: #333;
+    }
+  </style>
+  <body>
+    <div class="container">
+      <div class="filter-button">
+        <button class="active" data-name="show">Show All</button>
+        <button data-name="phone">Phones</button>
+        <button data-name="cloth">Clothes</button>
+        <button data-name="shoes">Shoes</button>
+      </div>
+
+      <div class="filterable-cards">
+        <div class="card" data-name="phone">
+          <img src="img/phone2.jpg" alt="" />
+          <div class="card-body">
+            <h6 class="card-title">Phone</h6>
+            <p class="card-text">
+              The flagship model with a revolutionary camera system and all-day battery life.
+            </p>
+          </div>
+        </div>
+        <div class="card" data-name="phone">
+          <img src="img/phone3.jpg" alt="" />
+          <div class="card-body">
+            <h6 class="card-title">Phone</h6>
+            <p class="card-text">
+              A sleek, budget-friendly device featuring a vibrant display and fluid performance.
+            </p>
+          </div>
+        </div>
+        <div class="card" data-name="phone">
+          <img src="img/phone4.jpg" alt="" />
+          <div class="card-body">
+            <h6 class="card-title">Phone</h6>
+            <p class="card-text">
+              Unleash the power of the latest chipset for unmatched gaming and multitasking.
+            </p>
+          </div>
+        </div>
+        <div class="card" data-name="phone">
+          <img src="img/phone5.jpg" alt="" />
+          <div class="card-body">
+            <h6 class="card-title">Phone</h6>
+            <p class="card-text">
+              Compact design paired with pro-level computational photography for stunning visuals.
+            </p>
+          </div>
+        </div>
+        <div class="card" data-name="shoes">
+          <img src="img/shoes1.jpg" alt="" />
+          <div class="card-body">
+            <h6 class="card-title">Shoes</h6>
+            <p class="card-text">
+              Lightweight running sneakers with excellent cushioning for long-distance comfort.
+            </p>
+          </div>
+        </div>
+        <div class="card" data-name="shoes">
+          <img src="img/shoes2.jpg" alt="" />
+          <div class="card-body">
+            <h6 class="card-title">Shoes</h6>
+            <p class="card-text">
+              Durable leather boots, perfect for rugged terrain and all-weather adventures.
+            </p>
+          </div>
+        </div>
+        <div class="card" data-name="shoes">
+          <img src="img/shoes3.jpg" alt="" />
+          <div class="card-body">
+            <h6 class="card-title">Shoes</h6>
+            <p class="card-text">
+              Stylish canvas slip-ons for casual weekend wear and effortless urban look.
+            </p>
+          </div>
+        </div>
+        <div class="card" data-name="cloth">
+          <img src="img/cloth1.jpg" alt="" />
+          <div class="card-body">
+            <h6 class="card-title">Cloth</h6>
+            <p class="card-text">
+              Soft, breathable cotton t-shirt for daily comfort and easy layering.
+            </p>
+          </div>
+        </div>
+        <div class="card" data-name="cloth">
+          <img src="img/cloth2.jpg" alt="" />
+          <div class="card-body">
+            <h6 class="card-title">Cloth</h6>
+            <p class="card-text">
+              Premium stretch denim jeans with a classic fit and exceptional durability.
+            </p>
+          </div>
+        </div>
+        <div class="card" data-name="cloth">
+          <img src="img/cloth3.jpg" alt="" />
+          <div class="card-body">
+            <h6 class="card-title">Cloth</h6>
+            <p class="card-text">
+              Warm knitted wool sweater, perfect for cold evenings and a cozy feel.
+            </p>
+          </div>
+        </div>
+        <div class="card" data-name="cloth">
+          <img src="img/cloth4.jpg" alt="" />
+          <div class="card-body">
+            <h6 class="card-title">Cloth</h6>
+            <p class="card-text">
+              Water-resistant jacket offering light protection from wind and rain.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    const filterButtons=document.querySelectorAll(".filter-button button");
+    const filterableCards=document.querySelectorAll(".filterable-cards .card");
+    const filterCards= (event)=>{
+      document.querySelector(".active").classList.remove("active");
+      event.target.classList.add('active');
+      filterableCards.forEach((card)=>{
+        card.classList.add('hide');
+        if(card.dataset.name===event.target.dataset.name || event.target.dataset.name==="show"){
+          card.classList.remove('hide');
+        }
+      })
+    }
+    filterButtons.forEach(button => button.addEventListener('click',filterCards))
+
+  </script>
+</html>

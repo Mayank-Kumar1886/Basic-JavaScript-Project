@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <title>Contact Us</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>GET IN TOUCH</h1>
+      <i class="fa-solid fa-location-dot location" style="color: #fff"></i>
+      <h2>ADDRESS</h2>
+      <div class="sections">
+        <div class="section1">
+          <h3>Weifield Group Contracting</h3>
+          <p>6950 S.Jordan Road</p>
+          <p>Centennial, CO 80112</p>
+        </div>
+        <div class="section2">
+          <h3>Industrail Division Office</h3>
+          <p>1270 Automation Drive #500</p>
+          <p>Windsor, CO 80550</p>
+        </div>
+        <div class="section3">
+          <h3>Wyoming Office</h3>
+          <p>308 Southwest Dr Unit E</p>
+          <p>Cheyenne, WY 82007</p>
+        </div>
+        <div class="section4">
+          <h3>Texas Office</h3>
+          <p>1421 Wells Branch Pkwy. Ste 303</p>
+        </div>
+      </div>
+      <i class="fa-solid fa-envelope mail" onclick="redirectToMail()"></i>
+    </div>
+  </body>
+  <style>
+    body{
+      height: 70rem;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    .container {
+      width: 35rem;
+      height: 62rem;
+      background-color: #0b4e58;
+      margin-top: 10rem;
+      margin-left: 40rem;
+      border-radius: 40px;
+    }
+    .container h1 {
+      font-size: 60px;
+      font-family: "Courier New", Courier, monospace;
+      font-weight: 900;
+      margin: 0px 60px;
+      padding-top: 15px;
+    }
+    .container .location {
+      padding: 50px;
+      border-radius: 80px;
+      font-size: 80px;
+      display: flex;
+      margin: 26px 200px;
+      border: none;
+      background-color: rgb(12, 49, 12);
+    }
+    .container h2 {
+      font-size: 50px;
+      display: flex;
+      text-align: center;
+      justify-content: center;
+      letter-spacing: 9px;
+      font-family: "Courier New", Courier, monospace;
+    }
+    .sections {
+      display: grid;
+      gap: 20px;
+    }
+    .section1 {
+      display: grid;
+      gap: 14px;
+      font-size: 25px;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .section2 {
+      display: grid;
+      gap: 14px;
+      font-size: 25px;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .section3 {
+      display: grid;
+      gap: 14px;
+      font-size: 25px;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .section4 {
+      display: grid;
+      gap: 14px;
+      font-size: 25px;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .mail {
+      font-size: 40px;
+      display: flex;
+      justify-content: end;
+      margin-right: 30px;
+      padding: 20px;
+      cursor: pointer;
+    }
+    .mail:hover{
+      transition: all ease-in-out 0.5s;
+      transform: scale(1.01);
+      font-size: 50px;
+    }
+  </style>
+  <script>
+   function redirectToMail(){
+      window.location.href = "../Blog/Mail.html"
+   }
+  </script>
+</html>

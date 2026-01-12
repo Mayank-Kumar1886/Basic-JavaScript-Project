@@ -1,0 +1,289 @@
+  <header class="header active">
+<div class="HeaderContainer">
+  <h1>MG Company</h1>
+  <nav class="navbar">
+    <ul class="navbar-nav">
+      <li class="nav-item" ><a href="#">Home</a></li>
+      <li class="nav-item" onclick="redirectToAbout()"><a href="#">About</a></li>
+      <li class="nav-item" onclick="redirectToServices()"><a href="#" >Services</a></li>
+      <li class="nav-item"><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+  <!-- <div class="buttons">
+    <button class="btn btn1" onclick="redirectToChoiceBlog()"><span></span> Find your choice Blog</button>
+    <button class="btn btn2" onclick="redirectToSignin()"> 
+      <span></span> Sign In  <i class="fa-solid fa-right-to-bracket"></i>
+    </button>
+    <button class="btn btn3">
+      <span></span> Sign out <i class="fa-solid fa-right-from-bracket"></i>
+    </button>
+  </div> -->
+  <div class="mobile-navbar-btn">
+    <i class="fa-solid fa-bars mobile-icon" name="hamburger-outline" id="mobile-nav-icon"></i>
+    <i class="fa-solid fa-xmark mobile-icon hidden" name="close-outline" id="mobile-nav-icon"></i>
+  </div>
+</div>
+</header>
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    list-style: none;
+    text-decoration: none;
+}
+html{
+    overflow-x: hidden;
+}
+body{
+    overflow-x: hidden;
+}
+.HeaderContainer{
+    background-color: #49c1a2;
+    display: flex;
+    justify-content: space-between;
+    height: 90px;
+}
+.HeaderContainer h1{
+    color:#fff ;
+    font-size:3em;
+    line-height:.9em;
+    letter-spacing:5px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    margin: 20px;
+}
+.navbar-nav{
+    margin-top: 13px;
+    gap: 30px;
+    display: flex;
+}
+.navbar-nav li{
+    
+    border-radius: 15px;
+    font-size: 25px;
+    border: 2px solid black;
+    padding: 10px;
+    background: linear-gradient(183deg, #49c1a2, transparent);
+}
+.navbar-nav li a{
+    margin-left: 20px;
+    margin-right: 20px;
+    color: #fff;
+
+}
+.navbar-nav li:hover{
+    
+    background: linear-gradient(183deg, #f8f8fa, transparent);
+    color: black;
+    transition: 0.4s ease-in-out;
+
+}
+.navbar-nav li:active{
+    border: 2px solid #fff;
+    color: black;
+}
+.buttons{
+    text-align: center;
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+button{
+    position: relative;
+    width: 110px;
+    padding: 4px 11px;
+    text-align: center;
+    margin: 3px 6px;
+    font-weight: bold;
+    border: 2px solid black;
+    background: transparent;
+    cursor: pointer;
+    color: #fff;
+    overflow: hidden;
+    text-transform: uppercase;
+    border-radius: 15px;
+    margin-bottom: 15px;
+}
+
+.btn1{
+    color: rgb(26, 26, 168);
+    background-color: white;
+}
+.btn1:hover{
+    color:white;
+    background-color:rgb(26, 26, 168) ;
+    transition: 0.8s;
+}
+.btn2{
+    color: rgb(7, 190, 7);
+    background-color: white;
+}
+.btn2:hover{
+    color: white;
+    background-color: rgb(7, 190, 7);
+    transition: 0.8s;
+}
+.btn3{
+    color: red;
+    background-color: #fff;
+    margin-right: 10px;
+}
+.btn3:hover{
+    background-color: red;
+    color: white;
+    transition: 0.8s;
+}
+
+span{
+    background: white;
+    height: 100%;
+    width: 0;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: -1;
+    transition: 0.5s;
+}
+.mobile-navbar-btn{
+   display: none;
+   background-color: transparent;
+   cursor: pointer;
+}
+#mobile-nav-icon{
+    width: 4rem;
+    height: 4rem;
+    color: white;
+}
+#mobile-nav-icon[name="close-outline"]{
+      display: none;
+}
+.mobile-icon {
+    display: block;
+  }
+.mobile-icon .hidden {
+    display: none;
+  }
+  
+@media (max-width : 1400px){
+    .HeaderContainer h1{
+        font-size: 2rem;
+        margin: 30px;
+        font-weight: 600;
+    }
+    .mobile-navbar-btn{
+        display: block;
+        z-index: 999;
+        border: 3px solid black;
+        color: #000;
+    }
+    .header{
+        position: relative;
+    }
+    .navbar{
+        display: none;
+        width: 100%;
+        height: 100vh;
+        background-color: #000;
+        color: white;
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transform: translateX(100%);
+        transition: all 0.5s linear;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+
+    }
+    .navbar-nav{
+        flex-direction: column;
+        align-items: center;
+    }
+    .active .navbar{
+        transform: translateX(0);
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+    .active .mobile-navbar-btn #mobile-nav-icon[name = "close-outline"]{
+         display: block;
+         
+    }
+    .active .mobile-navbar-btn #mobile-nav-icon[name = "hamburger-outline"]{
+         display: none;
+         
+    }
+}
+<!-- HTML !-->
+<button class="button-64" role="button"><span class="text">Button 64</span></button>
+
+/* CSS */
+.button-64 {
+  align-items: center;
+  background-image: linear-gradient(144deg,#AF40FF, #5B42F3 50%,#00DDEB);
+  border: 0;
+  border-radius: 8px;
+  box-shadow: rgba(151, 65, 252, 0.2) 0 15px 30px -5px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  display: flex;
+  font-family: Phantomsans, sans-serif;
+  font-size: 20px;
+  justify-content: center;
+  line-height: 1em;
+  max-width: 100%;
+  min-width: 140px;
+  padding: 3px;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.button-64:active,
+.button-64:hover {
+  outline: 0;
+}
+
+.button-64 span {
+  background-color: rgb(5, 6, 45);
+  padding: 16px 24px;
+  border-radius: 6px;
+  width: 100%;
+  height: 100%;
+  transition: 300ms;
+}
+
+.button-64:hover span {
+  background: none;
+}
+
+@media (min-width: 768px) {
+  .button-64 {
+    font-size: 24px;
+    min-width: 196px;
+  }
+}
+function isValidPassword(password) {
+  // Regular expression for password validation
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+  return passwordRegex.test(password);
+}
+
+function validatePasswordInput() {
+  const passwordInput = document.getElementById("passwordInput").value;
+  const validationMessage = document.getElementById("validationMessage");
+
+  if (isValidPassword(passwordInput)) {
+    validationMessage.textContent = "Correct password!";
+    validationMessage.style.color = "green";
+  } else {
+    validationMessage.textContent = "Wrong password!";
+    validationMessage.style.color = "red";
+  }
+}

@@ -1,0 +1,44 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    background-color: antiquewhite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.container{
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 10px black;
+    border-radius: 10px;
+    background-color: #fff;
+}
+.container .quote{
+    padding: 30px;
+    font-size: 2rem;
+}
+.container .author{
+    padding: 30px;
+    font-size: 30px;
+    color: red;
+    text-align: center;
+}
+.container button{
+    width: 40%;
+    margin: 0 auto;
+    padding: 21px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    background-color: blue;
+    color: white;
+    font-size: 25px;
+    cursor: pointer;
+    transition: all 0.5s ease-in;
+}
+.container button:hover{
+    transform: scale(1.05);
+}

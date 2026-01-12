@@ -1,0 +1,81 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    background-color: antiquewhite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.container{
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 10px black;
+    border-radius: 10px;
+    width: 30rem;
+    gap: 20px;
+}
+.container .title{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: blue;
+    border-radius: 10px;
+    color: white;
+    font-size: 2rem;
+
+}
+.container .display{
+    display: flex;
+    justify-content: space-between;
+    padding: 0 30px;
+    
+}
+.display #passwordInput ,
+.display #copy{
+    padding: 7px;
+    font-size: 20px;
+    border-radius: 10px;
+}
+#copy{
+    width: 5rem;
+    background-color: blue;
+    color: white;
+    cursor: pointer;
+}
+.setting {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 30px;
+    font-size: 20px;
+}
+#lengthNumber{
+    font-size: 20px;
+    padding: 5px;
+
+}
+.generate-btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+.generate-btn #generate{
+    background-color: blue;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 20px;
+    transition: all 0.5s ease-in; 
+    cursor: pointer;
+    width: 10rem;
+}
+.generate-btn #generate:hover{
+    transform: scale(1.2);
+}
+

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About</title>
+</head>
+<body>
+    <h2>About Us</h2>
+    <p>
+      Discover captivating blog posts on various topics with our user-friendly
+      blog app. Engage with insightful content and share your thoughts in the
+      comments. Stay informed and inspired.
+    </p>
+    <div class="container">
+      <div class="left">
+       <img src="https://deeptechstartups.in/wp-content/uploads/2022/09/Deep-Tech-1.jpg" alt="">
+      </div>
+      <div class="right">
+        <p>
+            Welcome to our user-friendly blog app! Explore captivating posts on diverse topics, from technology to lifestyle. Engage with insightful content, share your thoughts in the comments, and stay informed and inspired.
+            Unleash your curiosity on our feature-rich blog app. Dive into a treasure trove of captivating posts covering tech, lifestyle, travel, and more. Join a vibrant community, comment, and spark enriching discussions. Immerse yourself in knowledge and inspiration.
+            Embrace the world of endless possibilities with our cutting-edge blog app. Immerse yourself in thought-provoking content spanning technology, fashion, travel, and more. Connect with like-minded enthusiasts, share ideas, and enrich your mind. Your journey to inspiration starts here
+        </p>
+        <button onclick="redirectToReadMore()">Read More ...</button>
+      </div>
+    </div>
+  </body>
+  <style>
+    body{
+        background:#bdbddb;
+        width: 90rem;
+        height: 300px;
+        margin: auto;
+    }
+    h2{
+        font-size: 40px;
+        text-align: center;
+        margin-top:4%;
+    }
+    p{
+        line-height:30px ;
+        padding : 2%  6%;
+        font-size: 20px;
+        text-align: center;
+    }
+    .container{
+        display: flex;
+        justify-content: space-between;
+    }
+    .container img{
+        width: 600px;
+        height: 350px;
+
+
+    }
+    button{
+      margin-top: 60px;
+      font-size: 20px;
+      padding: 10px;
+      color: white;
+      background-color: black;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+
+    }
+    button:hover{
+      opacity:.8;
+      transform: scale(1.09);
+    }
+  </style>
+  <script>
+    function redirectToReadMore(){
+      window.location.href = "../Blog/ReadMore.html"
+    }
+  </script>
+</html>

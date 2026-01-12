@@ -1,0 +1,41 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    background-color: lightblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.container{
+    box-shadow: 0 0 10px black;
+    border-radius: 10px;
+    width: 30rem;
+}
+.container h1{
+      text-align: center;
+      background-color: blue;
+      color: white;
+      border-radius: 10px 10px 0 0;
+      padding: 20px;
+      font-size: 3rem;
+}
+.container .year{
+    padding: 20px;
+    text-align: center;
+    font-size: 5rem;
+    font-weight: 600;
+    background-color: #fff;
+}
+.timer {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    font-size: 30px;
+    background-color: blue;
+    color: white;
+    border-radius: 0 0 10px 10px;
+}

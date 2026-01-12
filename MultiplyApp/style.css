@@ -1,0 +1,59 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    background-color: lightblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.container{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0 0 10px black;
+    border-radius: 10px;
+    padding: 15px;
+    width: 30rem;
+}
+.container #score{
+    text-align: right;
+    font-size: 30px;
+    color: blue;
+    font-weight: 600;
+    animation: blink 1s infinite;
+}
+@keyframes blink {
+    0%{ opacity: 1;}
+    50% {opacity: 0;}
+    100% {opacity: 1;}
+}
+
+.container #question {
+    text-align: center;
+    font-size: 25px;
+}
+.container #answer{
+        width: 80%;
+    margin: 0 auto;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 20px;
+}
+.container #btn{
+    width: 30%;
+    padding: 10px;
+    margin: 0 auto;
+    border-radius: 10px;
+    background-color: blue;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.5s ease-in;
+}
+.container #btn:hover{
+    transform: scale(1.05);
+}
