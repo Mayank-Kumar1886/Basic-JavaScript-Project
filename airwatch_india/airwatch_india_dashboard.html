@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AirWatch India – Satellite PM Monitoring</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    /* PROFESSIONAL COLOR PALETTE */
+    --bg:#0F172A;          /* Deep Navy/Slate Background */
+    --panel:#1E293B;       /* Lighter Slate for Cards */
+    --panel2:#334155;      /* Secondary Panel Surface */
+    --border:#334155;      /* Subtle Border */
+    
+    --accent:#6366F1;      /* Professional Indigo Primary */
+    --accent2:#38BDF8;     /* Sky Blue Secondary */
+    --accent3:#94A3B8;     /* Muted Grey Accents */
+    --accent4:#F43F5E;     /* Soft Rose for Critical */
+    
+    --text:#F8FAFC;        /* Off-white main text */
+    --muted:#94A3B8;       /* Muted text */
+    
+    /* SEMANTIC DATA COLORS */
+    --good:#10B981;        /* Emerald Green */
+    --warn:#F59E0B;        /* Amber */
+    --bad:#EF4444;         /* Red */
+    --severe:#A855F7;      /* Purple */
+
+    --font-head:'Rajdhani',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+    --font-body:'Inter',sans-serif;
+  }
+  body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;overflow-x:hidden}
+
+  /* HEADER */
+  .header{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);background:var(--panel)}
+  .logo{display:flex;align-items:center;gap:10px}
+  .logo-icon{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:18px}
+  .logo-text{font-family:var(--font-head);font-size:22px;font-weight:700;letter-spacing:1px}
+  .logo-sub{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:2px}
+  .header-badges{display:flex;gap:8px;align-items:center}
+  .badge{padding:4px 10px;border-radius:4px;font-family:var(--font-mono);font-size:10px;letter-spacing:1px}
+  .badge-live{background:rgba(16,185,129,.1);color:var(--good);border:1px solid rgba(16,185,129,.2)}
+  .badge-sat{background:rgba(148,163,184,.1);color:var(--muted);border:1px solid var(--border)}
+  .time-display{font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+
+  /* TABS */
+  .tabs{display:flex;padding:0 24px;border-bottom:1px solid var(--border);background:var(--panel)}
+  .tab{padding:12px 20px;font-family:var(--font-head);font-size:14px;font-weight:600;letter-spacing:1px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+  .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+  .tab:hover:not(.active){color:var(--text)}
+
+  /* MAIN LAYOUT */
+  .main{padding:20px 24px;display:grid;gap:16px}
+
+  /* STATS ROW */
+  .stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+  .stat-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden}
+  .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+  .stat-card.green::before{background:var(--good)}
+  .stat-card.amber::before{background:var(--warn)}
+  .stat-card.red::before{background:var(--bad)}
+  .stat-card.blue::before{background:var(--accent2)}
+  .stat-card.teal::before{background:var(--accent)}
+  .stat-label{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--muted);margin-bottom:6px}
+  .stat-value{font-family:var(--font-head);font-size:26px;font-weight:700}
+  .stat-unit{font-size:12px;font-weight:400;color:var(--muted);margin-left:3px}
+  .stat-change{font-family:var(--font-mono);font-size:10px;margin-top:4px}
+  .stat-change.up{color:var(--bad)}
+  .stat-change.down{color:var(--good)}
+
+  /* GRID */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid-3{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:18px}
+  .card-title{font-family:var(--font-head);font-size:16px;font-weight:600;letter-spacing:1px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+  .card-sub{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:1.5px;margin-bottom:14px}
+
+  /* INDIA MAP */
+  .map-wrap{position:relative;background:rgba(15,23,42,0.5);border-radius:8px;overflow:hidden}
+  #india-svg{width:100%;height:340px;display:block}
+
+  /* AQI SCALE */
+  .aqi-scale{display:flex;gap:2px;margin-top:10px;border-radius:4px;overflow:hidden}
+  .aqi-seg{flex:1;height:6px}
+  .aqi-labels{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-top:4px}
+
+  /* TABLE */
+  .data-table{width:100%;border-collapse:collapse;font-size:13px}
+  .data-table th{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border)}
+  .data-table td{padding:9px 10px;border-bottom:1px solid rgba(51,65,85,0.4)}
+  .data-table tr:last-child td{border-bottom:none}
+  .data-table tr:hover td{background:rgba(255,255,255,.02)}
+  .aqi-pill{padding:2px 8px;border-radius:3px;font-family:var(--font-mono);font-size:10px;font-weight:500}
+  .aqi-good{background:rgba(16,185,129,.1);color:var(--good)}
+  .aqi-mod{background:rgba(245,158,11,.1);color:var(--warn)}
+  .aqi-poor{background:rgba(239,68,68,.1);color:var(--bad)}
+  .aqi-vp{background:rgba(168,85,247,.1);color:var(--severe)}
+
+  /* ML PIPELINE */
+  .pipeline{display:flex;align-items:center;gap:0;overflow-x:auto;padding:10px 0}
+  .pipe-step{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;min-width:130px;position:relative;flex-shrink:0}
+  .pipe-arrow{color:var(--muted);font-size:18px;flex-shrink:0;padding:0 4px}
+  .pipe-icon{font-size:20px;margin-bottom:6px}
+  .pipe-label{font-family:var(--font-head);font-size:13px;font-weight:600;letter-spacing:.5px}
+  .pipe-desc{font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-top:3px}
+  .pipe-badge{position:absolute;top:-8px;right:-8px;background:var(--accent);color:#fff;font-family:var(--font-mono);font-size:8px;padding:2px 6px;border-radius:10px;font-weight:500}
+
+  /* METRIC BARS */
+  .metric-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .metric-name{font-family:var(--font-mono);font-size:10px;color:var(--muted);min-width:90px;letter-spacing:.5px}
+  .metric-bar-wrap{flex:1;height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+  .metric-bar{height:100%;border-radius:3px;transition:width 1s}
+  .metric-val{font-family:var(--font-mono);font-size:11px;min-width:40px;text-align:right}
+
+  /* CHART WRAPPERS */
+  .chart-wrap{position:relative;width:100%;height:240px}
+  .ts-wrap{position:relative;width:100%;height:220px}
+
+  /* FOOTER */
+  .status-bar{display:flex;gap:16px;align-items:center;padding:10px 24px;border-top:1px solid var(--border);background:var(--panel);flex-wrap:wrap}
+  .status-item{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10px;color:var(--muted)}
+  .dot{width:6px;height:6px;border-radius:50%}
+  .dot.green{background:var(--good)}
+  .dot.amber{background:var(--warn)}
+  .dot.red{background:var(--bad)}
+
+  /* PAGES */
+  .page{display:none}
+  .page.active{display:block}
+
+  .scrollable{overflow-x:auto}
+  ::-webkit-scrollbar{height:4px;width:4px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+  @media(max-width:768px){
+    .stats-row{grid-template-columns:repeat(2,1fr)}
+    .grid-2,.grid-3{grid-template-columns:1fr}
+    .tabs{overflow-x:auto}
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">🛰️</div>
+    <div>
+      <div class="logo-text">AIRWATCH<span style="color:var(--accent)">·IN</span></div>
+      <div class="logo-sub">INSAT SATELLITE PM MONITORING SYSTEM</div>
+    </div>
+  </div>
+  <div class="header-badges">
+    <div class="badge badge-live">⬤ LIVE</div>
+    <div class="badge badge-sat">INSAT-3DS</div>
+    <div class="badge badge-sat">INSAT-3DR</div>
+    <div class="badge badge-sat">INSAT-3D</div>
+    <div class="time-display" id="clock-display">IST 00:00:00</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab(0)">▤ Overview</div>
+  <div class="tab" onclick="switchTab(1)">🗺 Spatial Map</div>
+  <div class="tab" onclick="switchTab(2)">🤖 ML Pipeline</div>
+  <div class="tab" onclick="switchTab(3)">📊 Validation</div>
+  <div class="tab" onclick="switchTab(4)">📡 Satellites</div>
+</div>
+
+<div class="page active" id="page-0">
+<div class="main">
+  <div class="stats-row">
+    <div class="stat-card red">
+      <div class="stat-label">NATIONAL AVG PM2.5</div>
+      <div class="stat-value">87<span class="stat-unit">µg/m³</span></div>
+      <div class="stat-change up">↑ 12% from yesterday</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="stat-label">NATIONAL AVG PM10</div>
+      <div class="stat-value">142<span class="stat-unit">µg/m³</span></div>
+      <div class="stat-change up">↑ 8% from yesterday</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-label">MEAN AOD (550nm)</div>
+      <div class="stat-value">0.48</div>
+      <div class="stat-change up">↑ 0.06 from baseline</div>
+    </div>
+    <div class="stat-card teal">
+      <div class="stat-label">CPCB STATIONS</div>
+      <div class="stat-value">342<span class="stat-unit">active</span></div>
+      <div class="stat-change down">↓ 8 offline today</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-label">MODEL RMSE</div>
+      <div class="stat-value">14.2<span class="stat-unit">µg/m³</span></div>
+      <div class="stat-change down">↓ improved by 3.1</div>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">⚠ City-Level PM2.5 Alert Status</div>
+      <div class="card-sub">CPCB GROUND STATIONS + ML PREDICTION · REAL-TIME</div>
+      <div class="scrollable">
+        <table class="data-table">
+          <thead><tr>
+            <th>CITY</th><th>STATION</th><th>PM2.5 (µg/m³)</th><th>AOD</th><th>AQI STATUS</th><th>SOURCE</th>
+          </tr></thead>
+          <tbody id="city-table"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📍 CPCB Station Feed</div>
+      <div class="card-sub">LIVE GROUND MEASUREMENTS</div>
+      <div id="live-feed" style="max-height:320px;overflow-y:auto"></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">📈 PM2.5 Time Series — Delhi NCR</div>
+      <div class="card-sub">SATELLITE ESTIMATE vs CPCB GROUND · 30 DAYS</div>
+      <div class="ts-wrap"><canvas id="ts-chart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🌬 AOD Band Distribution</div>
+      <div class="card-sub">INSAT-3DS SPECTRAL CHANNELS · TODAY</div>
+      <div class="chart-wrap"><canvas id="aod-chart"></canvas></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="page" id="page-1">
+<div class="main">
+  <div class="card">
+    <div class="card-title">🗺 India PM2.5 Concentration Map</div>
+    <div class="card-sub">DERIVED FROM AOD + MERRA-2 + ML REGRESSION · RESOLUTION: 4km</div>
+    <div class="grid-2" style="gap:16px">
+      <div>
+        <div class="map-wrap">
+          <svg id="india-svg" viewBox="0 0 400 440" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+        <div class="aqi-scale" style="margin-top:10px">
+          <div class="aqi-seg" style="background:var(--good)"></div>
+          <div class="aqi-seg" style="background:#84CC16"></div>
+          <div class="aqi-seg" style="background:var(--warn)"></div>
+          <div class="aqi-seg" style="background:#F97316"></div>
+          <div class="aqi-seg" style="background:var(--bad)"></div>
+          <div class="aqi-seg" style="background:var(--severe)"></div>
+        </div>
+        <div class="aqi-labels">
+          <span>Good (0-30)</span><span>Moderate (31-60)</span><span>Poor (61-90)</span><span>V.Poor (91-120)</span><span>Severe (120+)</span>
+        </div>
+      </div>
+      <div>
+        <div class="card-sub" style="margin-bottom:10px">STATE-WISE PM2.5 RANKING</div>
+        <div id="state-bars"></div>
+        <div style="margin-top:20px">
+          <div class="card-sub" style="margin-bottom:8px">HOT SPOTS — SEVERE ZONES</div>
+          <div id="hotspot-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="page" id="page-2">
+<div class="main">
+  <div class="card">
+    <div class="card-title">🤖 AI/ML Processing Pipeline</div>
+    <div class="card-sub">RANDOM FOREST REGRESSION · INSAT AOD → PM SURFACE ESTIMATION</div>
+    <div class="scrollable">
+      <div class="pipeline" id="pipeline-steps"></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">🌲 Feature Importance</div>
+      <div class="card-sub">RANDOM FOREST · TOP PREDICTORS</div>
+      <div id="feature-bars"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📉 Model Training Metrics</div>
+      <div class="card-sub">CROSS-VALIDATED · 5-FOLD</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="model-chart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔬 Hyperparameter Configuration</div>
+    <div class="card-sub">RANDOM FOREST TUNED PARAMETERS</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:4px">
+      <div style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center">
+        <div style="font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:4px">N_ESTIMATORS</div>
+        <div style="font-family:var(--font-head);font-size:28px;font-weight:700;color:var(--accent)">500</div>
+      </div>
+      <div style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center">
+        <div style="font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:4px">MAX_DEPTH</div>
+        <div style="font-family:var(--font-head);font-size:28px;font-weight:700;color:var(--accent2)">18</div>
+      </div>
+      <div style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center">
+        <div style="font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:4px">MIN_SAMPLES_LEAF</div>
+        <div style="font-family:var(--font-head);font-size:28px;font-weight:700;color:var(--warn)">4</div>
+      </div>
+      <div style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center">
+        <div style="font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:4px">MAX_FEATURES</div>
+        <div style="font-family:var(--font-head);font-size:28px;font-weight:700;color:var(--good)">"sqrt"</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="page" id="page-3">
+<div class="main">
+  <div class="stats-row">
+    <div class="stat-card green">
+      <div class="stat-label">R² SCORE</div>
+      <div class="stat-value">0.87</div>
+      <div class="stat-change down">Good fit</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-label">RMSE</div>
+      <div class="stat-value">14.2<span class="stat-unit">µg/m³</span></div>
+      <div class="stat-change down">↓ improved</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="stat-label">MAE</div>
+      <div class="stat-value">9.8<span class="stat-unit">µg/m³</span></div>
+      <div class="stat-change down">Within target</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-label">BIAS</div>
+      <div class="stat-value">+2.1<span class="stat-unit">µg/m³</span></div>
+      <div class="stat-change">Slight overestimate</div>
+    </div>
+    <div class="stat-card teal">
+      <div class="stat-label">SAMPLES VALIDATED</div>
+      <div class="stat-value">12,847</div>
+      <div class="stat-change">Station-days</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">🎯 Predicted vs Observed PM2.5</div>
+      <div class="card-sub">ML PREDICTION vs CPCB GROUND TRUTH · SCATTER</div>
+      <div class="chart-wrap" style="height:280px"><canvas id="scatter-chart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📊 Error Distribution by City Tier</div>
+      <div class="card-sub">RMSE BREAKDOWN BY POPULATION DENSITY</div>
+      <div class="chart-wrap" style="height:280px"><canvas id="error-chart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🏙 Station-Level Validation Summary</div>
+    <div class="card-sub">CPCB STATIONS · PREDICTION ACCURACY</div>
+    <div class="scrollable">
+      <table class="data-table">
+        <thead><tr>
+          <th>STATION</th><th>STATE</th><th>OBS AVG (µg/m³)</th><th>PRED AVG (µg/m³)</th><th>RMSE</th><th>R²</th><th>ACCURACY</th>
+        </tr></thead>
+        <tbody id="validation-table"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="page" id="page-4">
+<div class="main">
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">📡 Satellite Constellation Status</div>
+      <div class="card-sub">INSAT SERIES · ISRO GEOSTATIONARY ORBIT</div>
+      <div id="sat-cards"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">☁ MERRA-2 Variables</div>
+      <div class="card-sub">NASA REANALYSIS · INTEGRATED INPUTS</div>
+      <div id="merra-vars"></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">📻 Data Ingestion Timeline</div>
+      <div class="card-sub">LAST 24H · ACQUISITION SCHEDULE</div>
+      <div class="chart-wrap" style="height:200px"><canvas id="ingestion-chart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🌍 AOD Retrieval Coverage</div>
+      <div class="card-sub">CLOUD-FREE PIXEL FRACTION · BY REGION</div>
+      <div class="chart-wrap" style="height:200px"><canvas id="coverage-chart"></canvas></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="status-bar">
+  <div class="status-item"><div class="dot green"></div>INSAT-3DS ONLINE</div>
+  <div class="status-item"><div class="dot green"></div>INSAT-3DR ONLINE</div>
+  <div class="status-item"><div class="dot amber"></div>INSAT-3D PARTIAL</div>
+  <div class="status-item"><div class="dot green"></div>CPCB FEED ACTIVE</div>
+  <div class="status-item"><div class="dot green"></div>MERRA-2 SYNC OK</div>
+  <div class="status-item" style="margin-left:auto"><div class="dot green"></div>MODEL v3.2.1 LOADED</div>
+  <div class="status-item">LAST UPDATE: <span id="last-update" style="color:var(--accent);margin-left:4px">--</span></div>
+</div>
+
+<script>
+// COLOR HELPERS FOR JS
+const COLORS = {
+  good: '#10B981',
+  mod: '#F59E0B',
+  poor: '#EF4444',
+  vp: '#A855F7',
+  accent: '#6366F1',
+  accent2: '#38BDF8',
+  muted: '#94A3B8'
+};
+
+const cities = [
+  {city:"Delhi", station:"Anand Vihar", pm25:178, aod:0.82, status:"Severe"},
+  {city:"Lucknow", station:"Talkatora", pm25:134, aod:0.71, status:"V.Poor"},
+  {city:"Patna", station:"DRM Colony", pm25:121, aod:0.68, status:"V.Poor"},
+  {city:"Kanpur", station:"Kidwainagar", pm25:118, aod:0.65, status:"V.Poor"},
+  {city:"Agra", station:"Sanjay Place", pm25:112, aod:0.62, status:"V.Poor"},
+  {city:"Mumbai", station:"Bandra", pm25:68, aod:0.44, status:"Poor"},
+  {city:"Kolkata", station:"Jadavpur", pm25:95, aod:0.58, status:"Poor"},
+  {city:"Ahmedabad", station:"AUDA Vastrapur", pm25:74, aod:0.47, status:"Poor"},
+  {city:"Chennai", station:"Alandur", pm25:42, aod:0.31, status:"Moderate"},
+  {city:"Bengaluru", station:"BTM Layout", pm25:38, aod:0.28, status:"Moderate"},
+  {city:"Hyderabad", station:"Bollaram", pm25:45, aod:0.33, status:"Moderate"},
+  {city:"Pune", station:"Katraj", pm25:52, aod:0.38, status:"Moderate"},
+];
+
+const states = [
+  {name:"Bihar", pm25:128},{name:"Uttar Pradesh",pm25:119},{name:"Delhi", pm25:178},
+  {name:"Haryana", pm25:98}, {name:"Punjab", pm25:87}, {name:"Rajasthan", pm25:76},
+  {name:"West Bengal", pm25:74}, {name:"Gujarat", pm25:65}, {name:"Maharashtra", pm25:58},
+  {name:"Odisha", pm25:52}, {name:"Andhra Pradesh",pm25:44},{name:"Karnataka", pm25:36},
+  {name:"Tamil Nadu", pm25:33}, {name:"Kerala", pm25:21},
+];
+
+function aqiClass(pm25) {
+  if (pm25 <= 30) return 'aqi-good';
+  if (pm25 <= 60) return 'aqi-mod';
+  if (pm25 <= 90) return 'aqi-poor';
+  return 'aqi-vp';
+}
+function aqiColor(pm25) {
+  if (pm25 <= 30) return COLORS.good;
+  if (pm25 <= 60) return COLORS.mod;
+  if (pm25 <= 90) return COLORS.poor;
+  return COLORS.vp;
+}
+
+function updateClock() {
+  const now = new Date();
+  const ist = new Date(now.toLocaleString('en-US', {timeZone: 'Asia/Kolkata'}));
+  document.getElementById('clock-display').textContent = `IST ${ist.toTimeString().slice(0,8)}`;
+  document.getElementById('last-update').textContent = ist.toTimeString().slice(0,5) + ' IST';
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+const tabs = document.querySelectorAll('.tab');
+const pages = document.querySelectorAll('.page');
+let chartsInit = {};
+
+function switchTab(i) {
+  tabs.forEach((t, j) => t.classList.toggle('active', i === j));
+  pages.forEach((p, j) => p.classList.toggle('active', i === j));
+  if (!chartsInit[i]) { initPage(i); chartsInit[i] = true; }
+}
+
+(function initPage0Charts() {
+  const tbl = document.getElementById('city-table');
+  cities.forEach(c => {
+    const cls = aqiClass(c.pm25);
+    tbl.innerHTML += `<tr>
+      <td style="font-weight:500">${c.city}</td>
+      <td style="color:var(--muted);font-size:11px">${c.station}</td>
+      <td style="font-family:var(--font-mono);color:${aqiColor(c.pm25)}">${c.pm25}</td>
+      <td style="font-family:var(--font-mono)">${c.aod}</td>
+      <td><span class="aqi-pill ${cls}">${c.status}</span></td>
+      <td style="font-family:var(--font-mono);font-size:10px;color:var(--muted)">CPCB+ML</td>
+    </tr>`;
+  });
+
+  const feedItems = [
+    {station:"Punjabi Bagh, Delhi", pm:"162 µg/m³", time:"2m ago", cls:"aqi-vp"},
+    {station:"Sector 125, Noida", pm:"141 µg/m³", time:"3m ago", cls:"aqi-poor"},
+    {station:"Jadavpur, Kolkata", pm:"95 µg/m³", time:"4m ago", cls:"aqi-poor"},
+    {station:"Bandra East, Mumbai", pm:"68 µg/m³", time:"5m ago", cls:"aqi-mod"},
+    {station:"BTM Layout, Bengaluru", pm:"38 µg/m³", time:"6m ago", cls:"aqi-good"},
+    {station:"Alandur, Chennai", pm:"42 µg/m³", time:"7m ago", cls:"aqi-good"},
+    {station:"Talkatora, Lucknow", pm:"134 µg/m³", time:"8m ago", cls:"aqi-vp"},
+  ];
+  const feed = document.getElementById('live-feed');
+  feedItems.forEach(f => {
+    feed.innerHTML += `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(51,65,85,.4)">
+      <div>
+        <div style="font-size:12px;font-weight:500">${f.station}</div>
+        <div style="font-family:var(--font-mono);font-size:9px;color:var(--muted)">${f.time}</div>
+      </div>
+      <span class="aqi-pill ${f.cls}">${f.pm}</span>
+    </div>`;
+  });
+
+  const labels = Array.from({length: 30}, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - 29 + i);
+    return d.toLocaleDateString('en-IN', {day:'2-digit', month:'short'});
+  });
+  const groundData = labels.map(() => Math.round(100 + Math.random() * 120));
+  const satData = groundData.map(v => Math.round(v + (Math.random() - 0.5) * 20));
+
+  new Chart(document.getElementById('ts-chart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {label:'CPCB Ground', data:groundData, borderColor:COLORS.good, backgroundColor:'rgba(16,185,129,.05)', tension:.4, borderWidth:2, pointRadius:0, fill:true},
+        {label:'Satellite ML Estimate',data:satData, borderColor:COLORS.accent, backgroundColor:'transparent', tension:.4, borderWidth:2, borderDash:[4,3], pointRadius:0}
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {legend:{labels:{color:COLORS.muted, font:{size:11}}}},
+      scales: {
+        x: {ticks:{color:COLORS.muted, font:{size:9}, maxTicksLimit:10}, grid:{color:'rgba(255,255,255,.02)'}},
+        y: {ticks:{color:COLORS.muted, font:{size:9}}, grid:{color:'rgba(255,255,255,.02)'}}
+      }
+    }
+  });
+
+  const bands = ['412nm','443nm','490nm','550nm','620nm','670nm','750nm','865nm','1380nm'];
+  const aodVals = [0.62,0.58,0.54,0.48,0.44,0.41,0.35,0.29,0.18];
+  new Chart(document.getElementById('aod-chart'), {
+    type: 'bar',
+    data: {
+      labels: bands,
+      datasets: [{
+        label: 'AOD',
+        data: aodVals,
+        backgroundColor: aodVals.map(v => v > 0.5 ? COLORS.poor : v > 0.4 ? COLORS.mod : COLORS.accent),
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {legend:{display:false}},
+      scales: {
+        x: {ticks:{color:COLORS.muted, font:{size:9}}, grid:{display:false}},
+        y: {ticks:{color:COLORS.muted, font:{size:9}}, grid:{color:'rgba(255,255,255,.02)'}}
+      }
+    }
+  });
+  chartsInit[0] = true;
+})();
+
+function initPage(i) {
+  if (i === 1) initMapPage();
+  if (i === 2) initMLPage();
+  if (i === 3) initValidationPage();
+  if (i === 4) initSatPage();
+}
+
+function initMapPage() {
+  const svg = document.getElementById('india-svg');
+  const regions = [
+    ['J&K',120,30,22,45], ['HP',160,60,18,28], ['Punjab',100,80,20,87],
+    ['Haryana',140,95,20,98],['Delhi',160,110,14,178],['Rajasthan',100,160,38,76],
+    ['UP',210,125,45,119], ['Bihar',265,130,28,128], ['WB',295,150,25,74],
+    ['Assam',330,110,22,38],['Gujarat',85,195,30,65], ['MP',170,185,42,68],
+    ['Jharkhand',275,165,22,62],['Odisha',275,195,25,52],['Maharashtra',140,230,40,58],
+    ['Chhattisgarh',225,210,28,55],['AP',210,270,32,44],['Telangana',195,255,22,45],
+    ['Karnataka',165,295,32,36],['Tamil Nadu',180,345,28,33],['Kerala',155,355,20,21],
+    ['Goa',115,290,10,28],
+  ];
+
+  let svgContent = '';
+  regions.forEach(([name, cx, cy, r, pm]) => {
+    const col = aqiColor(pm);
+    svgContent += `<g>
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="${col}" fill-opacity="0.6" stroke="var(--bg)" stroke-width="1.5"/>
+      <text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle"
+            fill="white" font-size="${r > 25 ? 9 : 8}" font-family="IBM Plex Mono" font-weight="500">${pm}</text>
+    </g>`;
+  });
+  svg.innerHTML = svgContent;
+
+  const sb = document.getElementById('state-bars');
+  const maxPM = Math.max(...states.map(s => s.pm25));
+  states.forEach(s => {
+    const pct = Math.round(s.pm25 / maxPM * 100);
+    const col = aqiColor(s.pm25);
+    sb.innerHTML += `<div class="metric-row">
+      <div class="metric-name">${s.name}</div>
+      <div class="metric-bar-wrap"><div class="metric-bar" style="width:${pct}%;background:${col}"></div></div>
+      <div class="metric-val" style="color:${col}">${s.pm25}</div>
+    </div>`;
+  });
+
+  const hs = document.getElementById('hotspot-list');
+  [{loc:'Anand Vihar, Delhi',pm:178},{loc:'Talkatora, Lucknow',pm:134},
+   {loc:'DRM Colony, Patna',pm:121},{loc:'Kidwainagar, Kanpur',pm:118}].forEach(h => {
+    hs.innerHTML += `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;
+      background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.1);border-radius:6px;margin-bottom:6px">
+      <div style="font-size:12px">${h.loc}</div>
+      <span style="font-family:var(--font-mono);font-size:11px;color:${COLORS.poor}">${h.pm} µg/m³</span>
+    </div>`;
+  });
+}
+
+function initMLPage() {
+  const steps = [
+    {icon:'🛰️', label:'INSAT AOD', desc:'Raw L2 AOD product\n550nm channel', badge:null},
+    {icon:'⚙️', label:'Pre-process', desc:'Cloud mask, QA\nreprojection', badge:null},
+    {icon:'🌡️', label:'MERRA-2', desc:'T, RH, PBL, wind\nreanalysis vars', badge:null},
+    {icon:'📍', label:'CPCB Match', desc:'Spatial-temporal\nstation collocation', badge:null},
+    {icon:'🔀', label:'Feature Eng.', desc:'AOD×RH, seasonal\ncyclic encoding', badge:null},
+    {icon:'🌲', label:'Random Forest',desc:'500 trees, depth 18\n5-fold CV', badge:'MODEL'},
+    {icon:'📊', label:'PM Predict', desc:'Surface PM2.5\n& PM10 output', badge:null},
+    {icon:'✅', label:'Validate', desc:'vs CPCB truth\nRMSE, R²', badge:null},
+  ];
+  const pipe = document.getElementById('pipeline-steps');
+  steps.forEach((s, i) => {
+    pipe.innerHTML += `
+      <div class="pipe-step">${s.badge ? `<div class="pipe-badge">${s.badge}</div>` : ''}
+        <div class="pipe-icon">${s.icon}</div>
+        <div class="pipe-label">${s.label}</div>
+        <div class="pipe-desc" style="white-space:pre">${s.desc}</div>
+      </div>${i < steps.length - 1 ? '<div class="pipe-arrow">→</div>' : ''}`;
+  });
+
+  const features = [
+    {name:'AOD 550nm', val:0.31, col:COLORS.accent},
+    {name:'Rel. Humidity',val:0.18, col:COLORS.accent2},
+    {name:'PBL Height', val:0.14, col:COLORS.accent2},
+    {name:'Temperature', val:0.11, col:COLORS.accent2},
+    {name:'Wind Speed', val:0.09, col:COLORS.muted},
+    {name:'Season', val:0.07, col:COLORS.muted},
+  ];
+  const fb = document.getElementById('feature-bars');
+  features.forEach(f => {
+    fb.innerHTML += `<div class="metric-row">
+      <div class="metric-name">${f.name}</div>
+      <div class="metric-bar-wrap"><div class="metric-bar" style="width:${f.val * 100 / 0.31}%;background:${f.col}"></div></div>
+      <div class="metric-val">${(f.val * 100).toFixed(0)}%</div>
+    </div>`;
+  });
+
+  new Chart(document.getElementById('model-chart'), {
+    type: 'bar',
+    data: {
+      labels: ['Fold 1','Fold 2','Fold 3','Fold 4','Fold 5'],
+      datasets: [
+        {label:'Train R²', data:[0.92,0.91,0.93,0.90,0.92], backgroundColor:'rgba(99,102,241,.4)', borderRadius:2},
+        {label:'Test R²', data:[0.87,0.85,0.88,0.84,0.87], backgroundColor:'rgba(56,189,248,.4)', borderRadius:2}
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:COLORS.muted}}},
+      scales:{
+        x:{ticks:{color:COLORS.muted}, grid:{display:false}},
+        y:{ticks:{color:COLORS.muted}, grid:{color:'rgba(255,255,255,.02)'}, min:0.7, max:1.0}
+      }
+    }
+  });
+}
+
+function initValidationPage() {
+  const scatterData = Array.from({length: 60}, () => {
+    const obs = 20 + Math.random() * 160;
+    return {x: Math.round(obs), y: Math.round(obs + (Math.random() - 0.4) * 25)};
+  });
+  new Chart(document.getElementById('scatter-chart'), {
+    type: 'scatter',
+    data: {
+      datasets: [
+        {label:'Prediction', data:scatterData, backgroundColor:'rgba(99,102,241,.5)', pointRadius:4},
+        {label:'1:1 line', data:[{x:0,y:0},{x:200,y:200}], type:'line', borderColor:COLORS.poor, borderWidth:1, borderDash:[4,3], pointRadius:0}
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:COLORS.muted}}},
+      scales:{
+        x:{ticks:{color:COLORS.muted}, grid:{color:'rgba(255,255,255,.02)'}, min:0, max:220},
+        y:{ticks:{color:COLORS.muted}, grid:{color:'rgba(255,255,255,.02)'}, min:0, max:220}
+      }
+    }
+  });
+
+  new Chart(document.getElementById('error-chart'), {
+    type: 'bar',
+    data: {
+      labels: ['Metro','Tier-1','Tier-2','Tier-3','Rural'],
+      datasets: [{
+        data: [14.2, 17.8, 21.4, 26.1, 31.8],
+        backgroundColor: [COLORS.good, COLORS.accent2, COLORS.mod, '#F97316', COLORS.poor],
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{color:COLORS.muted}, grid:{display:false}},
+        y:{ticks:{color:COLORS.muted}, grid:{color:'rgba(255,255,255,.02)'}}
+      }
+    }
+  });
+
+  const vt = document.getElementById('validation-table');
+  const vData = [
+    {station:'Anand Vihar', state:'Delhi', obs:162, pred:168, rmse:12.4, r2:0.91, acc:'Good'},
+    {station:'Bandra', state:'Maharashtra', obs:68, pred:71, rmse:8.2, r2:0.89, acc:'Good'},
+    {station:'Talkatora', state:'UP', obs:134, pred:128, rmse:18.2, r2:0.82, acc:'Moderate'},
+  ];
+  vData.forEach(v => {
+    vt.innerHTML += `<tr>
+      <td style="font-weight:500">${v.station}</td>
+      <td style="color:var(--muted)">${v.state}</td>
+      <td style="font-family:var(--font-mono)">${v.obs}</td>
+      <td style="font-family:var(--font-mono);color:var(--accent2)">${v.pred}</td>
+      <td style="font-family:var(--font-mono)">${v.rmse}</td>
+      <td style="font-family:var(--font-mono);color:${v.r2>0.85?COLORS.good:COLORS.mod}">${v.r2}</td>
+      <td><span class="aqi-pill ${v.acc==='Good'?'aqi-good':'aqi-mod'}">${v.acc}</span></td>
+    </tr>`;
+  });
+}
+
+function initSatPage() {
+  const sats = [
+    {name:'INSAT-3DS', lon:'82°E', status:'Online', since:'2024'},
+    {name:'INSAT-3DR', lon:'74°E', status:'Online', since:'2016'},
+    {name:'INSAT-3D', lon:'82°E', status:'Partial', since:'2013'},
+  ];
+  const sc = document.getElementById('sat-cards');
+  sats.forEach(s => {
+    sc.innerHTML += `<div style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-family:var(--font-head);font-size:16px;font-weight:600">📡 ${s.name}</div>
+        <span class="aqi-pill ${s.status==='Online'?'aqi-good':'aqi-mod'}">${s.status}</span>
+      </div>
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--muted)">Orbit: ${s.lon} | Since: ${s.since}</div>
+    </div>`;
+  });
+
+  const mv = document.getElementById('merra-vars');
+  [{n:'Surface Temp', u:'K'}, {n:'RH (2M)', u:'%'}, {n:'Wind Speed', u:'m/s'}].forEach(v => {
+    mv.innerHTML += `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(51,65,85,.4)">
+      <div style="font-size:12px">${v.n}</div>
+      <span style="font-family:var(--font-mono);font-size:10px;color:var(--accent2);background:rgba(56,189,248,.1);padding:2px 8px;border-radius:3px">${v.u}</span>
+    </div>`;
+  });
+
+  new Chart(document.getElementById('ingestion-chart'), {
+    type: 'bar',
+    data: {
+      labels: Array.from({length:24}, (_, i) => `${i}:00`),
+      datasets: [{label:'INSAT-3DS', data:Array.from({length:24},()=>Math.random()*100), backgroundColor:COLORS.accent, borderRadius:2}]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{x:{ticks:{color:COLORS.muted, font:{size:8}}}, y:{ticks:{color:COLORS.muted}}}
+    }
+  });
+
+  new Chart(document.getElementById('coverage-chart'), {
+    type: 'bar',
+    data: {
+      labels: ['North','East','West','South','NE'],
+      datasets: [{data:[62,78,54,85,71], backgroundColor:COLORS.accent2, borderRadius:4}]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false, indexAxis:'y',
+      plugins:{legend:{display:false}},
+      scales:{x:{max:100, ticks:{color:COLORS.muted}}, y:{ticks:{color:COLORS.muted}}}
+    }
+  });
+}
+</script>
+</body>
+</html>
