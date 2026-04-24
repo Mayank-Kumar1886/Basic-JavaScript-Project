@@ -1,0 +1,110 @@
+[
+  {
+    "city": "Delhi",
+    "lat": 28.6139,
+    "lon": 77.209,
+    "station": "Anand Vihar",
+    "pm25": 106.6,
+    "aod": 0.89,
+    "aqi_category": "V.Poor"
+  },
+  {
+    "city": "Mumbai",
+    "lat": 19.076,
+    "lon": 72.8777,
+    "station": "Bandra",
+    "pm25": 85.6,
+    "aod": 0.71,
+    "aqi_category": "Poor"
+  },
+  {
+    "city": "Chennai",
+    "lat": 13.0827,
+    "lon": 80.2707,
+    "station": "Alandur",
+    "pm25": 39.4,
+    "aod": 0.33,
+    "aqi_category": "Moderate"
+  },
+  {
+    "city": "Bangalore",
+    "lat": 12.9716,
+    "lon": 77.5946,
+    "station": "BTM Layout",
+    "pm25": 34.5,
+    "aod": 0.29,
+    "aqi_category": "Moderate"
+  },
+  {
+    "city": "Lucknow",
+    "lat": 26.8467,
+    "lon": 80.9462,
+    "station": "Talkatora",
+    "pm25": 71.4,
+    "aod": 0.6,
+    "aqi_category": "Poor"
+  },
+  {
+    "city": "Kolkata",
+    "lat": 22.5726,
+    "lon": 88.3639,
+    "station": "Jadavpur",
+    "pm25": 111.7,
+    "aod": 0.93,
+    "aqi_category": "V.Poor"
+  },
+  {
+    "city": "Hyderabad",
+    "lat": 17.385,
+    "lon": 78.4867,
+    "station": "Bollaram",
+    "pm25": 60.0,
+    "aod": 0.5,
+    "aqi_category": "Poor"
+  },
+  {
+    "city": "Ahmedabad",
+    "lat": 23.0225,
+    "lon": 72.5714,
+    "station": "AUDA Vastrapur",
+    "pm25": 85.9,
+    "aod": 0.72,
+    "aqi_category": "Poor"
+  },
+  {
+    "city": "Pune",
+    "lat": 18.5204,
+    "lon": 73.8567,
+    "station": "Katraj",
+    "pm25": 34.5,
+    "aod": 0.29,
+    "aqi_category": "Moderate"
+  },
+  {
+    "city": "Patna",
+    "lat": 25.5941,
+    "lon": 85.1376,
+    "station": "DRM Colony",
+    "pm25": 76.5,
+    "aod": 0.64,
+    "aqi_category": "Poor"
+  },
+  {
+    "city": "Kanpur",
+    "lat": 26.4499,
+    "lon": 80.3319,
+    "station": "Kidwainagar",
+    "pm25": 34.5,
+    "aod": 0.29,
+    "aqi_category": "Moderate"
+  },
+  {
+    "city": "Jaipur",
+    "lat": 26.9124,
+    "lon": 75.7873,
+    "station": "Mansarovar",
+    "pm25": 44.4,
+    "aod": 0.37,
+    "aqi_category": "Moderate"
+  }
+]

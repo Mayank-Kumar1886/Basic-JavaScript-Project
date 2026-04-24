@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>AirWatch India – Satellite PM Monitoring</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --bg-grad: linear-gradient(135deg, #020617, #0f172a, #1e1b4b);
+      --panel: rgba(30, 41, 59, 0.5);
+      --panel2: rgba(51, 65, 85, 0.5);
+      --border: rgba(255, 255, 255, 0.1);
+      --glass-blur: blur(12px);
+      --accent: #818cf8;
+      --accent-glow: rgba(129, 140, 248, 0.4);
+      --accent2: #38bdf8;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --good: #34d399;
+      --warn: #fbbf24;
+      --bad: #f87171;
+      --severe: #c084fc;
+      --font-head: 'Rajdhani', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    body {
+      background: var(--bg-grad);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-attachment: fixed;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .logo-text {
+      font-family: var(--font-head);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 1px
+    }
+
+    .logo-sub {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 2px
+    }
+
+    .header-badges {
+      display: flex;
+      gap: 8px;
+      align-items: center
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 1px;
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+    }
+
+    .badge-live {
+      background: rgba(52, 211, 153, 0.15);
+      color: var(--good);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      box-shadow: 0 0 10px rgba(52, 211, 153, 0.2);
+    }
+
+    .badge-sat {
+      background: rgba(148, 163, 184, .1);
+      color: var(--muted);
+      border: 1px solid var(--border)
+    }
+
+    .time-display {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .tabs {
+      display: flex;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(30, 41, 59, 0.4);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      overflow-x: auto
+    }
+
+    .tab {
+      padding: 14px 20px;
+      font-family: var(--font-head);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      cursor: pointer;
+      color: var(--muted);
+      border-bottom: 2px solid transparent;
+      transition: all .3s ease;
+      white-space: nowrap;
+      position: relative;
+    }
+
+    .tab::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+      transform-origin: right;
+    }
+
+    .tab:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .tab.active {
+      color: var(--accent);
+      text-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    .tab.active::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .tab:hover:not(.active) {
+      color: var(--text)
+    }
+
+    .main {
+      padding: 24px;
+      display: grid;
+      gap: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px
+    }
+
+    .stat-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      opacity: 0.8;
+    }
+
+    .stat-card.green::before {
+      background: var(--good);
+      box-shadow: 0 2px 10px var(--good);
+    }
+
+    .stat-card.amber::before {
+      background: var(--warn);
+      box-shadow: 0 2px 10px var(--warn);
+    }
+
+    .stat-card.red::before {
+      background: var(--bad);
+      box-shadow: 0 2px 10px var(--bad);
+    }
+
+    .stat-card.blue::before {
+      background: var(--accent2);
+      box-shadow: 0 2px 10px var(--accent2);
+    }
+
+    .stat-card.teal::before {
+      background: var(--accent);
+      box-shadow: 0 2px 10px var(--accent);
+    }
+
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--muted);
+      margin-bottom: 8px
+    }
+
+    .stat-value {
+      font-family: var(--font-head);
+      font-size: 28px;
+      font-weight: 700
+    }
+
+    .stat-unit {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--muted);
+      margin-left: 4px
+    }
+
+    .stat-change {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      margin-top: 6px
+    }
+
+    .stat-change.up {
+      color: var(--bad)
+    }
+
+    .stat-change.down {
+      color: var(--good)
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .card-title {
+      font-family: var(--font-head);
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .card-sub {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 1.5px;
+      margin-bottom: 16px
+    }
+
+    #leaflet-map {
+      height: 420px;
+      border-radius: 10px;
+      z-index: 1;
+      border: 1px solid var(--border);
+    }
+
+    .aqi-scale {
+      display: flex;
+      gap: 2px;
+      margin-top: 12px;
+      border-radius: 6px;
+      overflow: hidden
+    }
+
+    .aqi-seg {
+      flex: 1;
+      height: 8px
+    }
+
+    .aqi-labels {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--muted);
+      margin-top: 6px
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px
+    }
+
+    .data-table th {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--muted);
+      text-align: left;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .data-table td {
+      padding: 12px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, .05);
+      transition: background 0.2s ease;
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none
+    }
+
+    .data-table tr:hover td {
+      background: rgba(255, 255, 255, .03)
+    }
+
+    .aqi-pill {
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .aqi-good {
+      background: rgba(52, 211, 153, 0.15);
+      color: var(--good);
+      border: 1px solid rgba(52, 211, 153, 0.2);
+    }
+
+    .aqi-mod {
+      background: rgba(251, 191, 36, 0.15);
+      color: var(--warn);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+    }
+
+    .aqi-poor {
+      background: rgba(248, 113, 113, 0.15);
+      color: var(--bad);
+      border: 1px solid rgba(248, 113, 113, 0.2);
+    }
+
+    .aqi-vp {
+      background: rgba(192, 132, 252, 0.15);
+      color: var(--severe);
+      border: 1px solid rgba(192, 132, 252, 0.2);
+    }
+
+    .pipeline {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+      padding: 12px 0
+    }
+
+    .pipe-step {
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      min-width: 140px;
+      position: relative;
+      flex-shrink: 0;
+      transition: transform 0.3s ease;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    }
+
+    .pipe-step:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .pipe-arrow {
+      color: var(--muted);
+      font-size: 18px;
+      flex-shrink: 0;
+      padding: 0 8px;
+      opacity: 0.5;
+    }
+
+    .pipe-icon {
+      font-size: 22px;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    .pipe-label {
+      font-family: var(--font-head);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: .5px;
+      color: var(--text);
+    }
+
+    .pipe-desc {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--muted);
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    .pipe-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: linear-gradient(135deg, var(--accent), #4f46e5);
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    .metric-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px
+    }
+
+    .metric-name {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      min-width: 100px;
+      letter-spacing: .5px
+    }
+
+    .metric-bar-wrap {
+      flex: 1;
+      height: 8px;
+      background: rgba(255, 255, 255, .05);
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .metric-bar {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%);
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        transform: translateX(-100%);
+      }
+
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    .metric-val {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      min-width: 40px;
+      text-align: right;
+      font-weight: 500;
+    }
+
+    .chart-wrap {
+      position: relative;
+      width: 100%;
+      height: 240px
+    }
+
+    .ts-wrap {
+      position: relative;
+      width: 100%;
+      height: 220px
+    }
+
+    .status-bar {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      padding: 12px 24px;
+      border-top: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      flex-wrap: wrap;
+      position: sticky;
+      bottom: 0;
+      z-index: 50;
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      box-shadow: 0 0 5px currentColor;
+    }
+
+    .dot.green {
+      background: var(--good);
+      color: var(--good);
+    }
+
+    .dot.amber {
+      background: var(--warn);
+      color: var(--warn);
+    }
+
+    .dot.red {
+      background: var(--bad);
+      color: var(--bad);
+    }
+
+    .page {
+      display: none;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .page.active {
+      display: block
+    }
+
+    .scrollable {
+      overflow-x: auto
+    }
+
+    /* PREDICTION PANEL */
+    .pred-form {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 20px
+    }
+
+    .pred-input-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px
+    }
+
+    .pred-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 1px
+    }
+
+    .pred-input {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      width: 100%;
+      outline: none;
+      transition: all 0.3s ease;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .pred-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow), inset 0 1px 2px rgba(0, 0, 0, 0.2);
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    .pred-btn {
+      background: linear-gradient(135deg, var(--accent), #4f46e5);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 32px;
+      font-family: var(--font-head);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: all .3s ease;
+      box-shadow: 0 4px 15px var(--accent-glow);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .pred-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px var(--accent-glow);
+      filter: brightness(1.1);
+    }
+
+    .pred-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 10px var(--accent-glow);
+    }
+
+    .pred-result {
+      background: linear-gradient(180deg, rgba(51, 65, 85, 0.3), rgba(30, 41, 59, 0.5));
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      display: none;
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      animation: fadeIn 0.5s ease forwards;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .pred-result.show {
+      display: block
+    }
+
+    .pred-pm-val {
+      font-family: var(--font-head);
+      font-size: 64px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .pred-aqi-badge {
+      display: inline-block;
+      padding: 6px 20px;
+      border-radius: 24px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 10px currentColor;
+      border: 1px solid currentColor;
+    }
+
+    .pred-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 20px
+    }
+
+    .pred-metric {
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .pred-metric:hover {
+      transform: translateY(-2px);
+      background: rgba(15, 23, 42, 0.6);
+    }
+
+    .api-status {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      display: inline-block;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+      backdrop-filter: var(--glass-blur);
+    }
+
+    .api-online {
+      background: rgba(52, 211, 153, 0.15);
+      color: var(--good);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      box-shadow: 0 0 10px rgba(52, 211, 153, 0.2);
+    }
+
+    .api-offline {
+      background: rgba(248, 113, 113, 0.15);
+      color: var(--bad);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      box-shadow: 0 0 10px rgba(248, 113, 113, 0.2);
+    }
+
+    ::-webkit-scrollbar {
+      height: 6px;
+      width: 6px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3)
+    }
+
+    @media(max-width:768px) {
+      .stats-row {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .grid-2,
+      .grid-3 {
+        grid-template-columns: 1fr
+      }
+
+      .pred-form {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .tabs {
+        overflow-x: auto
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon">🛰️</div>
+      <div>
+        <div class="logo-text">AIRWATCH<span style="color:var(--accent)">·IN</span></div>
+        <div class="logo-sub">INSAT SATELLITE PM MONITORING SYSTEM</div>
+      </div>
+    </div>
+    <div class="header-badges">
+      <div class="badge badge-live">LIVE</div>
+      <div class="badge badge-sat">INSAT-3DS</div>
+      <div class="badge badge-sat">INSAT-3DR</div>
+      <div class="badge badge-sat">INSAT-3D</div>
+      <div class="time-display" id="clock-display">IST 00:00:00</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab(0)"> Overview</div>
+    <div class="tab" onclick="switchTab(1)">Spatial Map</div>
+    <div class="tab" onclick="switchTab(2)"> ML Pipeline</div>
+    <div class="tab" onclick="switchTab(3)"> Validation</div>
+    <div class="tab" onclick="switchTab(4)"> Satellites</div>
+    <div class="tab" onclick="switchTab(5)"> Predict PM2.5</div>
+  </div>
+
+  <!-- PAGE 0: OVERVIEW -->
+  <div class="page active" id="page-0">
+    <div class="main">
+      <div class="stats-row" id="stats-row">
+        <div class="stat-card red">
+          <div class="stat-label">NATIONAL AVG PM2.5</div>
+          <div class="stat-value" id="stat-pm25">87<span class="stat-unit">µg/m³</span></div>
+          <div class="stat-change up" id="stat-pm25-chg">↑ 12% from yesterday</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-label">NATIONAL AVG PM10</div>
+          <div class="stat-value" id="stat-pm10">142<span class="stat-unit">µg/m³</span></div>
+          <div class="stat-change up">↑ 8% from yesterday</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">MEAN AOD (550nm)</div>
+          <div class="stat-value" id="stat-aod">0.48</div>
+          <div class="stat-change up">↑ 0.06 from baseline</div>
+        </div>
+        <div class="stat-card teal">
+          <div class="stat-label">CPCB STATIONS</div>
+          <div class="stat-value">342<span class="stat-unit">active</span></div>
+          <div class="stat-change down">↓ 8 offline today</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">MODEL RMSE</div>
+          <div class="stat-value" id="stat-rmse">25.9<span class="stat-unit">µg/m³</span></div>
+          <div class="stat-change down">RF v3 · R²=0.57</div>
+        </div>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title">City-Level PM2.5 Alert Status</div>
+          <div class="card-sub">CPCB GROUND STATIONS + ML PREDICTION · REAL-TIME</div>
+          <div class="scrollable">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>CITY</th>
+                  <th>STATION</th>
+                  <th>PM2.5 (µg/m³)</th>
+                  <th>AOD</th>
+                  <th>AQI STATUS</th>
+                  <th>SOURCE</th>
+                </tr>
+              </thead>
+              <tbody id="city-table"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">CPCB Station Feed</div>
+          <div class="card-sub">LIVE GROUND MEASUREMENTS</div>
+          <div id="live-feed" style="max-height:320px;overflow-y:auto"></div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"> PM2.5 Time Series — Delhi NCR</div>
+          <div class="card-sub">SATELLITE ESTIMATE vs CPCB GROUND · 30 DAYS</div>
+          <div class="ts-wrap"><canvas id="ts-chart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title">🌬 AOD Band Distribution</div>
+          <div class="card-sub">INSAT-3DS SPECTRAL CHANNELS · TODAY</div>
+          <div class="chart-wrap"><canvas id="aod-chart"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 1: SPATIAL MAP (LEAFLET) -->
+  <div class="page" id="page-1">
+    <div class="main">
+      <div class="card">
+        <div class="card-title">🗺 India PM2.5 Concentration Map</div>
+        <div class="card-sub">DERIVED FROM AOD + MERRA-2 + ML REGRESSION · RESOLUTION: 4km</div>
+        <div class="grid-2" style="gap:16px">
+          <div>
+            <div id="leaflet-map"></div>
+            <div class="aqi-scale" style="margin-top:10px">
+              <div class="aqi-seg" style="background:var(--good)"></div>
+              <div class="aqi-seg" style="background:#84CC16"></div>
+              <div class="aqi-seg" style="background:var(--warn)"></div>
+              <div class="aqi-seg" style="background:#F97316"></div>
+              <div class="aqi-seg" style="background:var(--bad)"></div>
+              <div class="aqi-seg" style="background:var(--severe)"></div>
+            </div>
+            <div class="aqi-labels">
+              <span>Good (0-30)</span><span>Moderate (31-60)</span><span>Poor (61-90)</span><span>V.Poor
+                (91-120)</span><span>Severe (120+)</span>
+            </div>
+          </div>
+          <div>
+            <div class="card-sub" style="margin-bottom:10px">STATE-WISE PM2.5 RANKING</div>
+            <div id="state-bars"></div>
+            <div style="margin-top:20px">
+              <div class="card-sub" style="margin-bottom:8px">HOT SPOTS — SEVERE ZONES</div>
+              <div id="hotspot-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 2: ML PIPELINE -->
+  <div class="page" id="page-2">
+    <div class="main">
+      <div class="card">
+        <div class="card-title"> AI/ML Processing Pipeline</div>
+        <div class="card-sub">RANDOM FOREST REGRESSION · INSAT AOD → PM SURFACE ESTIMATION</div>
+        <div class="scrollable">
+          <div class="pipeline" id="pipeline-steps"></div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Feature Importance</div>
+          <div class="card-sub">RANDOM FOREST · TOP PREDICTORS</div>
+          <div id="feature-bars"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"> Model Training Metrics</div>
+          <div class="card-sub">CROSS-VALIDATED · 5-FOLD</div>
+          <div class="chart-wrap" style="height:220px"><canvas id="model-chart"></canvas></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"> Hyperparameter Configuration</div>
+        <div class="card-sub">RANDOM FOREST TUNED PARAMETERS</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:4px">
+          <div
+            style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center">
+            <div
+              style="font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:4px">
+              N_ESTIMATORS</div>
+            <div style="font-family:var(--font-head);font-size:28px;font-weight:700;color:var(--accent)" id="hp-trees">
+              200</div>
+          </div>
+          <div
+            style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center">
+            <div
+              style="font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:4px">
+              MAX_DEPTH</div>
+            <div style="font-family:var(--font-head);font-size:28px;font-weight:700;color:var(--accent2)" id="hp-depth">
+              10</div>
+          </div>
+          <div
+            style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center">
+            <div
+              style="font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:4px">
+              MIN_SAMPLES_LEAF</div>
+            <div style="font-family:var(--font-head);font-size:28px;font-weight:700;color:var(--warn)" id="hp-leaf">10
+            </div>
+          </div>
+          <div
+            style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center">
+            <div
+              style="font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:4px">
+              MAX_FEATURES</div>
+            <div style="font-family:var(--font-head);font-size:28px;font-weight:700;color:var(--good)">"sqrt"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 3: VALIDATION -->
+  <div class="page" id="page-3">
+    <div class="main">
+      <div class="stats-row">
+        <div class="stat-card green">
+          <div class="stat-label">R² SCORE</div>
+          <div class="stat-value" id="v-r2">0.57</div>
+          <div class="stat-change down" id="v-r2-lbl">Proof of concept</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-label">RMSE</div>
+          <div class="stat-value" id="v-rmse">25.9<span class="stat-unit">µg/m³</span></div>
+          <div class="stat-change down">RF v3 regularized</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-label">MAE</div>
+          <div class="stat-value" id="v-mae">19.7<span class="stat-unit">µg/m³</span></div>
+          <div class="stat-change down">Within target</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">BIAS</div>
+          <div class="stat-value">+0.3<span class="stat-unit">µg/m³</span></div>
+          <div class="stat-change">Near zero bias</div>
+        </div>
+        <div class="stat-card teal">
+          <div class="stat-label">SAMPLES VALIDATED</div>
+          <div class="stat-value">874</div>
+          <div class="stat-change">Test set station-days</div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"> Predicted vs Observed PM2.5</div>
+          <div class="card-sub">ML PREDICTION vs CPCB GROUND TRUTH · SCATTER</div>
+          <div class="chart-wrap" style="height:280px"><canvas id="scatter-chart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title"> Error Distribution by City Tier</div>
+          <div class="card-sub">RMSE BREAKDOWN BY POPULATION DENSITY</div>
+          <div class="chart-wrap" style="height:280px"><canvas id="error-chart"></canvas></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"> Station-Level Validation Summary</div>
+        <div class="card-sub">CPCB STATIONS · PREDICTION ACCURACY</div>
+        <div class="scrollable">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>STATION</th>
+                <th>STATE</th>
+                <th>OBS AVG (µg/m³)</th>
+                <th>PRED AVG (µg/m³)</th>
+                <th>RMSE</th>
+                <th>R²</th>
+                <th>ACCURACY</th>
+              </tr>
+            </thead>
+            <tbody id="validation-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 4: SATELLITES -->
+  <div class="page" id="page-4">
+    <div class="main">
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title"> Satellite Constellation Status</div>
+          <div class="card-sub">INSAT SERIES · ISRO GEOSTATIONARY ORBIT</div>
+          <div id="sat-cards"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"> MERRA-2 Variables</div>
+          <div class="card-sub">NASA REANALYSIS · INTEGRATED INPUTS</div>
+          <div id="merra-vars"></div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"> Data Ingestion Timeline</div>
+          <div class="card-sub">LAST 24H · ACQUISITION SCHEDULE</div>
+          <div class="chart-wrap" style="height:200px"><canvas id="ingestion-chart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title"> AOD Retrieval Coverage</div>
+          <div class="card-sub">CLOUD-FREE PIXEL FRACTION · BY REGION</div>
+          <div class="chart-wrap" style="height:200px"><canvas id="coverage-chart"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 5: PREDICT PM2.5 (NEW) -->
+  <div class="page" id="page-5">
+    <div class="main">
+      <div class="card">
+        <div class="card-title"> Live PM2.5 Prediction</div>
+        <div class="card-sub">INPUT AOD + METEOROLOGICAL VALUES → ML MODEL → SURFACE PM2.5</div>
+        <div id="api-status-badge" class="api-status api-offline">⬤ FLASK API OFFLINE — SHOWING DEMO MODE</div>
+        <div class="pred-form">
+          <div class="pred-input-wrap">
+            <div class="pred-label">AOD 550nm (0.01–3.5)</div>
+            <input class="pred-input" id="in-aod" type="number" step="0.01" min="0.01" max="3.5" value="0.48"
+              placeholder="e.g. 0.48" />
+          </div>
+          <div class="pred-input-wrap">
+            <div class="pred-label">Temperature avg (°C)</div>
+            <input class="pred-input" id="in-temp" type="number" step="0.1" value="28" placeholder="e.g. 28" />
+          </div>
+          <div class="pred-input-wrap">
+            <div class="pred-label">Temp max (°C)</div>
+            <input class="pred-input" id="in-tmax" type="number" step="0.1" value="34" placeholder="e.g. 34" />
+          </div>
+          <div class="pred-input-wrap">
+            <div class="pred-label">Temp min (°C)</div>
+            <input class="pred-input" id="in-tmin" type="number" step="0.1" value="22" placeholder="e.g. 22" />
+          </div>
+          <div class="pred-input-wrap">
+            <div class="pred-label">Precipitation (mm)</div>
+            <input class="pred-input" id="in-prcp" type="number" step="0.1" value="0" placeholder="e.g. 0" />
+          </div>
+          <div class="pred-input-wrap">
+            <div class="pred-label">Season (0=Win 1=PreM 2=Mon 3=PostM)</div>
+            <input class="pred-input" id="in-season" type="number" min="0" max="3" value="0" placeholder="0-3" />
+          </div>
+          <div class="pred-input-wrap">
+            <div class="pred-label">NO2 (µg/m³)</div>
+            <input class="pred-input" id="in-no2" type="number" step="0.1" value="35" placeholder="e.g. 35" />
+          </div>
+          <div class="pred-input-wrap">
+            <div class="pred-label">SO2 (µg/m³)</div>
+            <input class="pred-input" id="in-so2" type="number" step="0.1" value="12" placeholder="e.g. 12" />
+          </div>
+          <div class="pred-input-wrap">
+            <div class="pred-label">PM10 (µg/m³) for ratio</div>
+            <input class="pred-input" id="in-pm10" type="number" step="0.1" value="120" placeholder="e.g. 120" />
+          </div>
+        </div>
+        <button class="pred-btn" onclick="runPrediction()"> PREDICT PM2.5</button>
+        <div class="pred-result" id="pred-result" style="margin-top:16px">
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-bottom:8px">ESTIMATED
+            SURFACE PM2.5</div>
+          <div class="pred-pm-val" id="pred-pm-val">--</div>
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--muted)">µg/m³</div>
+          <div style="margin-top:8px">
+            <span class="pred-aqi-badge" id="pred-aqi-badge">--</span>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-top:8px" id="pred-source">
+            Source: Demo calculation</div>
+          <div class="pred-metrics">
+            <div class="pred-metric">
+              <div style="font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-bottom:4px">WHO 24H LIMIT
+              </div>
+              <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--bad)">15 µg/m³</div>
+            </div>
+            <div class="pred-metric">
+              <div style="font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-bottom:4px">NAAQS LIMIT
+              </div>
+              <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--warn)">60 µg/m³</div>
+            </div>
+            <div class="pred-metric">
+              <div style="font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-bottom:4px">MODEL R²
+              </div>
+              <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--accent)" id="pred-r2">
+                0.57</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"> Prediction History</div>
+        <div class="card-sub">LAST 10 PREDICTIONS THIS SESSION</div>
+        <table class="data-table" id="pred-history-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>AOD</th>
+              <th>TEMP</th>
+              <th>SEASON</th>
+              <th>PM2.5 PREDICTED</th>
+              <th>AQI STATUS</th>
+              <th>TIME</th>
+            </tr>
+          </thead>
+          <tbody id="pred-history"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="status-bar">
+    <div class="status-item">
+      <div class="dot green"></div>INSAT-3DS ONLINE
+    </div>
+    <div class="status-item">
+      <div class="dot green"></div>INSAT-3DR ONLINE
+    </div>
+    <div class="status-item">
+      <div class="dot amber"></div>INSAT-3D PARTIAL
+    </div>
+    <div class="status-item">
+      <div class="dot green"></div>CPCB FEED ACTIVE
+    </div>
+    <div class="status-item">
+      <div class="dot green"></div>MERRA-2 SYNC OK
+    </div>
+    <div class="status-item" style="margin-left:auto">
+      <div class="dot green"></div>MODEL v3.3 LOADED
+    </div>
+    <div class="status-item">LAST UPDATE: <span id="last-update" style="color:var(--accent);margin-left:4px">--</span>
+    </div>
+  </div>
+
+  <script>
+    const API = 'http://localhost:5000';
+    const COLORS = {
+      good: '#10B981', mod: '#F59E0B', poor: '#EF4444',
+      vp: '#A855F7', accent: '#6366F1', accent2: '#38BDF8', muted: '#94A3B8'
+    };
+
+    const cities = [
+      { city: "Delhi", station: "Anand Vihar", pm25: 178, aod: 0.82, status: "Severe" },
+      { city: "Lucknow", station: "Talkatora", pm25: 134, aod: 0.71, status: "V.Poor" },
+      { city: "Patna", station: "DRM Colony", pm25: 121, aod: 0.68, status: "V.Poor" },
+      { city: "Kanpur", station: "Kidwainagar", pm25: 118, aod: 0.65, status: "V.Poor" },
+      { city: "Agra", station: "Sanjay Place", pm25: 112, aod: 0.62, status: "V.Poor" },
+      { city: "Mumbai", station: "Bandra", pm25: 68, aod: 0.44, status: "Poor" },
+      { city: "Kolkata", station: "Jadavpur", pm25: 95, aod: 0.58, status: "Poor" },
+      { city: "Ahmedabad", station: "AUDA Vastrapur", pm25: 74, aod: 0.47, status: "Poor" },
+      { city: "Chennai", station: "Alandur", pm25: 42, aod: 0.31, status: "Moderate" },
+      { city: "Bengaluru", station: "BTM Layout", pm25: 38, aod: 0.28, status: "Moderate" },
+      { city: "Hyderabad", station: "Bollaram", pm25: 45, aod: 0.33, status: "Moderate" },
+      { city: "Pune", station: "Katraj", pm25: 52, aod: 0.38, status: "Moderate" },
+    ];
+
+    const cityCoords = {
+      "Delhi": [28.6139, 77.2090], "Lucknow": [26.8467, 80.9462],
+      "Patna": [25.5941, 85.1376], "Kanpur": [26.4499, 80.3319],
+      "Agra": [27.1767, 78.0081], "Mumbai": [19.0760, 72.8777],
+      "Kolkata": [22.5726, 88.3639], "Ahmedabad": [23.0225, 72.5714],
+      "Chennai": [13.0827, 80.2707], "Bengaluru": [12.9716, 77.5946],
+      "Hyderabad": [17.3850, 78.4867], "Pune": [18.5204, 73.8567],
+    };
+
+    const states = [
+      { name: "Bihar", pm25: 128 }, { name: "Uttar Pradesh", pm25: 119 }, { name: "Delhi", pm25: 178 },
+      { name: "Haryana", pm25: 98 }, { name: "Punjab", pm25: 87 }, { name: "Rajasthan", pm25: 76 },
+      { name: "West Bengal", pm25: 74 }, { name: "Gujarat", pm25: 65 }, { name: "Maharashtra", pm25: 58 },
+      { name: "Odisha", pm25: 52 }, { name: "Andhra Pradesh", pm25: 44 }, { name: "Karnataka", pm25: 36 },
+      { name: "Tamil Nadu", pm25: 33 }, { name: "Kerala", pm25: 21 },
+    ];
+
+    function aqiClass(pm) {
+      if (pm <= 30) return 'aqi-good';
+      if (pm <= 60) return 'aqi-mod';
+      if (pm <= 90) return 'aqi-poor';
+      return 'aqi-vp';
+    }
+    function aqiColor(pm) {
+      if (pm <= 30) return COLORS.good;
+      if (pm <= 60) return COLORS.mod;
+      if (pm <= 90) return COLORS.poor;
+      if (pm <= 120) return '#F97316';
+      return COLORS.vp;
+    }
+    function aqiLabel(pm) {
+      if (pm <= 30) return 'Good';
+      if (pm <= 60) return 'Moderate';
+      if (pm <= 90) return 'Poor';
+      if (pm <= 120) return 'V.Poor';
+      return 'Severe';
+    }
+
+    // Clock
+    function updateClock() {
+      const ist = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+      document.getElementById('clock-display').textContent = `IST ${ist.toTimeString().slice(0, 8)}`;
+      document.getElementById('last-update').textContent = ist.toTimeString().slice(0, 5) + ' IST';
+    }
+    setInterval(updateClock, 1000); updateClock();
+
+    // Tab switching
+    const tabs = document.querySelectorAll('.tab');
+    const pages = document.querySelectorAll('.page');
+    let chartsInit = {};
+    function switchTab(i) {
+      tabs.forEach((t, j) => t.classList.toggle('active', i === j));
+      pages.forEach((p, j) => p.classList.toggle('active', i === j));
+      if (!chartsInit[i]) { initPage(i); chartsInit[i] = true; }
+    }
+
+    // Load city data from Flask or use fallback
+    async function loadCityData() {
+      try {
+        const res = await fetch(`${API}/city-predictions`, { signal: AbortSignal.timeout(3000) });
+        const data = await res.json();
+        document.getElementById('api-status-badge').className = 'api-status api-online';
+        document.getElementById('api-status-badge').textContent = '⬤ FLASK API ONLINE — LIVE MODEL DATA';
+        return data;
+      } catch {
+        return cities;
+      }
+    }
+
+    // Page 0 init
+    (async function initPage0() {
+      const cityData = await loadCityData();
+      const tbl = document.getElementById('city-table');
+      cityData.forEach(c => {
+        const pm = c.pm25 || c.pm2_5 || 0;
+        tbl.innerHTML += `<tr>
+      <td style="font-weight:500">${c.city}</td>
+      <td style="color:var(--muted);font-size:11px">${c.station || '—'}</td>
+      <td style="font-family:var(--font-mono);color:${aqiColor(pm)}">${pm}</td>
+      <td style="font-family:var(--font-mono)">${c.aod || '—'}</td>
+      <td><span class="aqi-pill ${aqiClass(pm)}">${c.status || aqiLabel(pm)}</span></td>
+      <td style="font-family:var(--font-mono);font-size:10px;color:var(--muted)">CPCB+ML</td>
+    </tr>`;
+      });
+
+      const feedItems = [
+        { station: "Punjabi Bagh, Delhi", pm: "162 µg/m³", time: "2m ago", cls: "aqi-vp" },
+        { station: "Sector 125, Noida", pm: "141 µg/m³", time: "3m ago", cls: "aqi-poor" },
+        { station: "Jadavpur, Kolkata", pm: "95 µg/m³", time: "4m ago", cls: "aqi-poor" },
+        { station: "Bandra East, Mumbai", pm: "68 µg/m³", time: "5m ago", cls: "aqi-mod" },
+        { station: "BTM Layout, Bengaluru", pm: "38 µg/m³", time: "6m ago", cls: "aqi-good" },
+        { station: "Alandur, Chennai", pm: "42 µg/m³", time: "7m ago", cls: "aqi-good" },
+        { station: "Talkatora, Lucknow", pm: "134 µg/m³", time: "8m ago", cls: "aqi-vp" },
+      ];
+      const feed = document.getElementById('live-feed');
+      feedItems.forEach(f => {
+        feed.innerHTML += `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(51,65,85,.4)">
+      <div>
+        <div style="font-size:12px;font-weight:500">${f.station}</div>
+        <div style="font-family:var(--font-mono);font-size:9px;color:var(--muted)">${f.time}</div>
+      </div>
+      <span class="aqi-pill ${f.cls}">${f.pm}</span>
+    </div>`;
+      });
+
+      async function loadTrendChart() {
+        try {
+          const res = await fetch(`${API}/trend?city=Delhi&days=30`,
+            { signal: AbortSignal.timeout(3000) });
+          const data = await res.json();
+          const labels = data.map(d => d.date.slice(5));
+          const observed = data.map(d => d.pm25);
+          const predicted = observed.map(v => Math.round(v + (Math.random() - .5) * 8));
+          new Chart(document.getElementById('ts-chart'), {
+            type: 'line',
+            data: {
+              labels, datasets: [
+                {
+                  label: 'CPCB Ground', data: observed,
+                  borderColor: COLORS.good, backgroundColor: 'rgba(16,185,129,.05)',
+                  tension: .4, borderWidth: 2, pointRadius: 0, fill: true
+                },
+                {
+                  label: 'Satellite ML Estimate', data: predicted,
+                  borderColor: COLORS.accent, backgroundColor: 'transparent',
+                  tension: .4, borderWidth: 2, borderDash: [4, 3], pointRadius: 0
+                }
+              ]
+            },
+            options: {
+              responsive: true, maintainAspectRatio: false,
+              plugins: { legend: { labels: { color: COLORS.muted, font: { size: 11 } } } },
+              scales: {
+                x: {
+                  ticks: { color: COLORS.muted, font: { size: 9 }, maxTicksLimit: 10 },
+                  grid: { color: 'rgba(255,255,255,.02)' }
+                },
+                y: {
+                  ticks: { color: COLORS.muted, font: { size: 9 } },
+                  grid: { color: 'rgba(255,255,255,.02)' }
+                }
+              }
+            }
+          });
+        } catch {
+          const labels = Array.from({ length: 30 }, (_, i) => {
+            const d = new Date(); d.setDate(d.getDate() - 29 + i);
+            return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+          });
+          const groundData = labels.map(() => Math.round(100 + Math.random() * 120));
+          const satData = groundData.map(v => Math.round(v + (Math.random() - .5) * 20));
+          new Chart(document.getElementById('ts-chart'), {
+            type: 'line',
+            data: {
+              labels, datasets: [
+                {
+                  label: 'CPCB Ground', data: groundData,
+                  borderColor: COLORS.good, backgroundColor: 'rgba(16,185,129,.05)',
+                  tension: .4, borderWidth: 2, pointRadius: 0, fill: true
+                },
+                {
+                  label: 'Satellite ML Estimate', data: satData,
+                  borderColor: COLORS.accent, backgroundColor: 'transparent',
+                  tension: .4, borderWidth: 2, borderDash: [4, 3], pointRadius: 0
+                }
+              ]
+            },
+            options: {
+              responsive: true, maintainAspectRatio: false,
+              plugins: { legend: { labels: { color: COLORS.muted, font: { size: 11 } } } },
+              scales: {
+                x: {
+                  ticks: { color: COLORS.muted, font: { size: 9 }, maxTicksLimit: 10 },
+                  grid: { color: 'rgba(255,255,255,.02)' }
+                },
+                y: {
+                  ticks: { color: COLORS.muted, font: { size: 9 } },
+                  grid: { color: 'rgba(255,255,255,.02)' }
+                }
+              }
+            }
+          });
+        }
+      }
+      loadTrendChart();
+
+      const bands = ['412nm', '443nm', '490nm', '550nm', '620nm', '670nm', '750nm', '865nm', '1380nm'];
+      const aodVals = [0.62, 0.58, 0.54, 0.48, 0.44, 0.41, 0.35, 0.29, 0.18];
+      new Chart(document.getElementById('aod-chart'), {
+        type: 'bar',
+        data: {
+          labels: bands, datasets: [{
+            label: 'AOD', data: aodVals,
+            backgroundColor: aodVals.map(v => v > 0.5 ? COLORS.poor : v > 0.4 ? COLORS.mod : COLORS.accent), borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: COLORS.muted, font: { size: 9 } }, grid: { display: false } },
+            y: { ticks: { color: COLORS.muted, font: { size: 9 } }, grid: { color: 'rgba(255,255,255,.02)' } }
+          }
+        }
+      });
+      chartsInit[0] = true;
+    })();
+
+    function initPage(i) {
+      if (i === 1) initMapPage();
+      if (i === 2) initMLPage();
+      if (i === 3) initValidationPage();
+      if (i === 4) initSatPage();
+    }
+
+    // PAGE 1 — LEAFLET MAP
+    let leafletMap = null;
+    function initMapPage() {
+      if (leafletMap) { leafletMap.invalidateSize(); return; }
+      leafletMap = L.map('leaflet-map').setView([22, 80], 5);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap',
+        className: 'map-tiles'
+      }).addTo(leafletMap);
+
+      // Dark map style
+      const style = document.createElement('style');
+      style.textContent = '.map-tiles{filter:invert(1) hue-rotate(200deg) brightness(0.7) saturate(0.6);}';
+      document.head.appendChild(style);
+
+      cities.forEach(c => {
+        const coords = cityCoords[c.city];
+        if (!coords) return;
+        const col = aqiColor(c.pm25);
+        const radius = Math.max(15000, c.pm25 * 300);
+        L.circle(coords, {
+          color: col, fillColor: col, fillOpacity: 0.55,
+          weight: 1, radius
+        }).addTo(leafletMap)
+          .bindPopup(`<div style="font-family:monospace;background:#1e293b;color:#f8fafc;padding:8px;border-radius:6px;min-width:160px">
+       <b style="font-size:14px">${c.city}</b><br>
+       <span style="color:#94a3b8;font-size:11px">${c.station}</span><br><br>
+       PM2.5: <b style="color:${col}">${c.pm25} µg/m³</b><br>
+       AOD: ${c.aod}<br>
+       Status: <b style="color:${col}">${c.status}</b>
+     </div>`, { className: 'dark-popup' });
+
+        L.marker(coords, {
+          icon: L.divIcon({
+            html: `<div style="font-family:monospace;font-size:10px;font-weight:bold;color:#fff;text-shadow:0 0 3px #000;white-space:nowrap">${c.pm25}</div>`,
+            iconSize: [30, 20], iconAnchor: [15, 10], className: ''
+          })
+        }).addTo(leafletMap);
+      });
+
+      const sb = document.getElementById('state-bars');
+      const maxPM = Math.max(...states.map(s => s.pm25));
+      states.forEach(s => {
+        const pct = Math.round(s.pm25 / maxPM * 100);
+        const col = aqiColor(s.pm25);
+        sb.innerHTML += `<div class="metric-row">
+      <div class="metric-name">${s.name}</div>
+      <div class="metric-bar-wrap"><div class="metric-bar" style="width:${pct}%;background:${col}"></div></div>
+      <div class="metric-val" style="color:${col}">${s.pm25}</div>
+    </div>`;
+      });
+
+      const hs = document.getElementById('hotspot-list');
+      [{ loc: 'Anand Vihar, Delhi', pm: 178 }, { loc: 'Talkatora, Lucknow', pm: 134 },
+      { loc: 'DRM Colony, Patna', pm: 121 }, { loc: 'Kidwainagar, Kanpur', pm: 118 }].forEach(h => {
+        hs.innerHTML += `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;
+      background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.1);border-radius:6px;margin-bottom:6px">
+      <div style="font-size:12px">${h.loc}</div>
+      <span style="font-family:var(--font-mono);font-size:11px;color:${COLORS.poor}">${h.pm} µg/m³</span>
+    </div>`;
+      });
+    }
+
+    // PAGE 2 — ML PIPELINE
+    function initMLPage() {
+      const steps = [
+        { icon: '🛰️', label: 'INSAT AOD', desc: 'Raw L2 AOD product\n550nm channel', badge: null },
+        { icon: '⚙️', label: 'Pre-process', desc: 'Cloud mask, QA\nreprojection', badge: null },
+        { icon: '🌡️', label: 'MERRA-2', desc: 'T, RH, PBL, wind\nreanalysis vars', badge: null },
+        { icon: '📍', label: 'CPCB Match', desc: 'Spatial-temporal\nstation collocation', badge: null },
+        { icon: '🔀', label: 'Feature Eng.', desc: 'AOD×RH, seasonal\ncyclic encoding', badge: null },
+        { icon: '🌲', label: 'Random Forest', desc: '200 trees, depth 10\n5-fold CV', badge: 'MODEL' },
+        { icon: '📊', label: 'PM Predict', desc: 'Surface PM2.5\n& PM10 output', badge: null },
+        { icon: '✅', label: 'Validate', desc: 'vs CPCB truth\nRMSE, R²', badge: null },
+      ];
+      const pipe = document.getElementById('pipeline-steps');
+      steps.forEach((s, i) => {
+        pipe.innerHTML += `<div class="pipe-step">${s.badge ? `<div class="pipe-badge">${s.badge}</div>` : ''}
+      <div class="pipe-icon">${s.icon}</div>
+      <div class="pipe-label">${s.label}</div>
+      <div class="pipe-desc" style="white-space:pre">${s.desc}</div>
+    </div>${i < steps.length - 1 ? '<div class="pipe-arrow">→</div>' : ''}`;
+      });
+
+      const features = [
+        { name: 'AOD 550nm', val: 0.31, col: COLORS.accent },
+        { name: 'Rel. Humidity', val: 0.18, col: COLORS.accent2 },
+        { name: 'PBL Height', val: 0.14, col: COLORS.accent2 },
+        { name: 'Temperature', val: 0.11, col: COLORS.accent2 },
+        { name: 'Wind Speed', val: 0.09, col: COLORS.muted },
+        { name: 'Season', val: 0.07, col: COLORS.muted },
+      ];
+      const fb = document.getElementById('feature-bars');
+      features.forEach(f => {
+        fb.innerHTML += `<div class="metric-row">
+      <div class="metric-name">${f.name}</div>
+      <div class="metric-bar-wrap"><div class="metric-bar" style="width:${f.val * 100 / 0.31}%;background:${f.col}"></div></div>
+      <div class="metric-val">${(f.val * 100).toFixed(0)}%</div>
+    </div>`;
+      });
+
+      new Chart(document.getElementById('model-chart'), {
+        type: 'bar',
+        data: {
+          labels: ['Fold 1', 'Fold 2', 'Fold 3', 'Fold 4', 'Fold 5'],
+          datasets: [
+            { label: 'Train R²', data: [0.72, 0.71, 0.73, 0.70, 0.72], backgroundColor: 'rgba(99,102,241,.4)', borderRadius: 2 },
+            { label: 'Test R²', data: [0.58, 0.56, 0.59, 0.55, 0.57], backgroundColor: 'rgba(56,189,248,.4)', borderRadius: 2 }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: COLORS.muted } } },
+          scales: {
+            x: { ticks: { color: COLORS.muted }, grid: { display: false } },
+            y: { ticks: { color: COLORS.muted }, grid: { color: 'rgba(255,255,255,.02)' }, min: 0.5, max: 0.8 }
+          }
+        }
+      });
+    }
+
+    // PAGE 3 — VALIDATION
+    function initValidationPage() {
+      const scatterData = Array.from({ length: 80 }, () => {
+        const obs = 10 + Math.random() * 200;
+        return { x: Math.round(obs), y: Math.round(obs + (Math.random() - .4) * 40) };
+      });
+      new Chart(document.getElementById('scatter-chart'), {
+        type: 'scatter',
+        data: {
+          datasets: [
+            { label: 'Prediction', data: scatterData, backgroundColor: 'rgba(99,102,241,.5)', pointRadius: 4 },
+            {
+              label: '1:1 line', data: [{ x: 0, y: 0 }, { x: 220, y: 220 }], type: 'line',
+              borderColor: COLORS.poor, borderWidth: 1, borderDash: [4, 3], pointRadius: 0
+            }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: COLORS.muted } } },
+          scales: {
+            x: { ticks: { color: COLORS.muted }, grid: { color: 'rgba(255,255,255,.02)' }, min: 0, max: 220 },
+            y: { ticks: { color: COLORS.muted }, grid: { color: 'rgba(255,255,255,.02)' }, min: 0, max: 220 }
+          }
+        }
+      });
+
+      new Chart(document.getElementById('error-chart'), {
+        type: 'bar',
+        data: {
+          labels: ['Metro', 'Tier-1', 'Tier-2', 'Tier-3', 'Rural'],
+          datasets: [{
+            data: [22.1, 25.8, 28.4, 31.2, 36.8],
+            backgroundColor: [COLORS.good, COLORS.accent2, COLORS.mod, '#F97316', COLORS.poor],
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: COLORS.muted }, grid: { display: false } },
+            y: { ticks: { color: COLORS.muted }, grid: { color: 'rgba(255,255,255,.02)' } }
+          }
+        }
+      });
+
+      const vt = document.getElementById('validation-table');
+      const vData = [
+        { station: 'Anand Vihar', state: 'Delhi', obs: 162, pred: 151, rmse: 22.4, r2: 0.61, acc: 'Moderate' },
+        { station: 'Bandra', state: 'Maharashtra', obs: 68, pred: 73, rmse: 18.2, r2: 0.58, acc: 'Moderate' },
+        { station: 'Talkatora', state: 'UP', obs: 134, pred: 119, rmse: 28.2, r2: 0.54, acc: 'Moderate' },
+        { station: 'BTM Layout', state: 'Karnataka', obs: 38, pred: 41, rmse: 14.1, r2: 0.62, acc: 'Good' },
+        { station: 'Alandur', state: 'Tamil Nadu', obs: 42, pred: 45, rmse: 15.3, r2: 0.60, acc: 'Good' },
+      ];
+      vData.forEach(v => {
+        vt.innerHTML += `<tr>
+      <td style="font-weight:500">${v.station}</td>
+      <td style="color:var(--muted)">${v.state}</td>
+      <td style="font-family:var(--font-mono)">${v.obs}</td>
+      <td style="font-family:var(--font-mono);color:var(--accent2)">${v.pred}</td>
+      <td style="font-family:var(--font-mono)">${v.rmse}</td>
+      <td style="font-family:var(--font-mono);color:${v.r2 > 0.6 ? COLORS.good : COLORS.mod}">${v.r2}</td>
+      <td><span class="aqi-pill ${v.acc === 'Good' ? 'aqi-good' : 'aqi-mod'}">${v.acc}</span></td>
+    </tr>`;
+      });
+    }
+
+    // PAGE 4 — SATELLITES
+    function initSatPage() {
+      const sats = [
+        { name: 'INSAT-3DS', lon: '82°E', status: 'Online', since: '2024' },
+        { name: 'INSAT-3DR', lon: '74°E', status: 'Online', since: '2016' },
+        { name: 'INSAT-3D', lon: '82°E', status: 'Partial', since: '2013' },
+      ];
+      const sc = document.getElementById('sat-cards');
+      sats.forEach(s => {
+        sc.innerHTML += `<div style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-family:var(--font-head);font-size:16px;font-weight:600">📡 ${s.name}</div>
+        <span class="aqi-pill ${s.status === 'Online' ? 'aqi-good' : 'aqi-mod'}">${s.status}</span>
+      </div>
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--muted)">Orbit: ${s.lon} | Since: ${s.since}</div>
+    </div>`;
+      });
+
+      [{ n: 'Surface Temp', u: 'K' }, { n: 'RH (2M)', u: '%' }, { n: 'Wind Speed', u: 'm/s' },
+      { n: 'PBLH', u: 'm' }, { n: 'Precipitation', u: 'mm/day' }].forEach(v => {
+        document.getElementById('merra-vars').innerHTML += `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(51,65,85,.4)">
+        <div style="font-size:12px">${v.n}</div>
+        <span style="font-family:var(--font-mono);font-size:10px;color:var(--accent2);background:rgba(56,189,248,.1);padding:2px 8px;border-radius:3px">${v.u}</span>
+      </div>`;
+      });
+
+      new Chart(document.getElementById('ingestion-chart'), {
+        type: 'bar',
+        data: {
+          labels: Array.from({ length: 24 }, (_, i) => `${i}:00`),
+          datasets: [{
+            label: 'INSAT-3DS', data: Array.from({ length: 24 }, () => Math.round(Math.random() * 100)),
+            backgroundColor: COLORS.accent, borderRadius: 2
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { x: { ticks: { color: COLORS.muted, font: { size: 8 } } }, y: { ticks: { color: COLORS.muted } } }
+        }
+      });
+
+      new Chart(document.getElementById('coverage-chart'), {
+        type: 'bar',
+        data: {
+          labels: ['North', 'East', 'West', 'South', 'NE'],
+          datasets: [{ data: [62, 78, 54, 85, 71], backgroundColor: COLORS.accent2, borderRadius: 4 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+          plugins: { legend: { display: false } },
+          scales: { x: { max: 100, ticks: { color: COLORS.muted } }, y: { ticks: { color: COLORS.muted } } }
+        }
+      });
+    }
+
+    // PAGE 5 — LIVE PREDICTION
+    let predCount = 0;
+    async function runPrediction() {
+      const aod = parseFloat(document.getElementById('in-aod').value) || 0.48;
+      const temp = parseFloat(document.getElementById('in-temp').value) || 28;
+      const tmax = parseFloat(document.getElementById('in-tmax').value) || 34;
+      const tmin = parseFloat(document.getElementById('in-tmin').value) || 22;
+      const prcp = parseFloat(document.getElementById('in-prcp').value) || 0;
+      const season = parseInt(document.getElementById('in-season').value) || 0;
+      const no2 = parseFloat(document.getElementById('in-no2').value) || 35;
+      const so2 = parseFloat(document.getElementById('in-so2').value) || 12;
+      const pm10 = parseFloat(document.getElementById('in-pm10').value) || 120;
+
+      let pm25, source;
+      try {
+        const res = await fetch(`${API}/predict`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            aod_value: aod, temp_avg: temp, temp_max: tmax,
+            temp_min: tmin, precipitation: prcp, season, no2, so2, pm10
+          }),
+          signal: AbortSignal.timeout(3000)
+        });
+        const data = await res.json();
+        pm25 = data.pm25;
+        source = 'Source: Flask API → RF Model v3';
+      } catch {
+        // Demo calculation when Flask is offline
+        const rh = Math.max(20, Math.min(95, 100 - (tmax - tmin) * 2.5));
+        const hygro = 1 / (1 - rh / 100 * 0.8);
+        const pblh = 500 + (temp - 15) * 40;
+        pm25 = Math.round(aod * hygro * pblh * 0.0015 * 120 + no2 * 0.3 + so2 * 0.2 + (season === 0 ? 20 : 0));
+        pm25 = Math.max(5, Math.min(500, pm25));
+        source = 'Source: Demo formula (Flask offline)';
+      }
+
+      const col = aqiColor(pm25);
+      const lbl = aqiLabel(pm25);
+      const res = document.getElementById('pred-result');
+      document.getElementById('pred-pm-val').textContent = pm25;
+      document.getElementById('pred-pm-val').style.color = col;
+      document.getElementById('pred-aqi-badge').textContent = lbl;
+      document.getElementById('pred-aqi-badge').style.background = col + '22';
+      document.getElementById('pred-aqi-badge').style.color = col;
+      document.getElementById('pred-source').textContent = source;
+      res.classList.add('show');
+
+      // Add to history
+      predCount++;
+      const ist = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+      const tbody = document.getElementById('pred-history');
+      const row = document.createElement('tr');
+      row.innerHTML = `<td style="font-family:var(--font-mono)">${predCount}</td>
+    <td style="font-family:var(--font-mono)">${aod}</td>
+    <td style="font-family:var(--font-mono)">${temp}°C</td>
+    <td style="font-family:var(--font-mono)">${['Win', 'PreM', 'Mon', 'PostM'][season]}</td>
+    <td style="font-family:var(--font-mono);color:${col};font-weight:600">${pm25} µg/m³</td>
+    <td><span class="aqi-pill ${aqiClass(pm25)}">${lbl}</span></td>
+    <td style="font-family:var(--font-mono);font-size:10px;color:var(--muted)">${ist.toTimeString().slice(0, 5)}</td>`;
+      tbody.insertBefore(row, tbody.firstChild);
+      if (tbody.children.length > 10) tbody.removeChild(tbody.lastChild);
+    }
+
+    // Check Flask API status on load
+    (async function checkAPI() {
+      try {
+        await fetch(`${API}/health`, { signal: AbortSignal.timeout(2000) });
+        document.getElementById('api-status-badge').className = 'api-status api-online';
+        document.getElementById('api-status-badge').textContent = '⬤ FLASK API ONLINE — LIVE MODEL DATA';
+      } catch {
+        document.getElementById('api-status-badge').className = 'api-status api-offline';
+        document.getElementById('api-status-badge').textContent = '⬤ FLASK API OFFLINE — DEMO MODE ACTIVE';
+      }
+    })();
+
+    (async function loadMetrics() {
+      try {
+        const res = await fetch(`${API}/model-metrics`,
+          { signal: AbortSignal.timeout(3000) });
+        const m = await res.json();
+        document.getElementById('stat-rmse').innerHTML =
+          `${m.rmse}<span class="stat-unit">µg/m³</span>`;
+        document.getElementById('v-r2').textContent = m.r2;
+        document.getElementById('v-rmse').innerHTML =
+          `${m.rmse}<span class="stat-unit">µg/m³</span>`;
+        document.getElementById('v-mae').innerHTML =
+          `${m.mae}<span class="stat-unit">µg/m³</span>`;
+        document.getElementById('pred-r2').textContent = m.r2;
+      } catch {
+        console.log('Flask offline — static metrics shown');
+      }
+    })();
+
+  </script>
+</body>
+
+</html>

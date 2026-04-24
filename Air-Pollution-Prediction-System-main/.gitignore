@@ -1,0 +1,19 @@
+# Model files (too large for git)
+models/*.pkl
+models/*.joblib
+
+# Python
+__pycache__/
+*.pyc
+.env
+venv/
+
+# Data
+data/raw/
+*.h5
+*.nc4
+*.csv
+
+# OS
+.DS_Store
+Thumbs.db
